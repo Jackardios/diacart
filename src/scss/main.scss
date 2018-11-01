@@ -1,0 +1,7 @@
+.parent {
+  text-align: center;
+  color: #fff;
+  &__clild {
+    display: flex;
+  }
+}
