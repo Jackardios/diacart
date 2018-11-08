@@ -4,22 +4,19 @@ const merge = require('webpack-merge');
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-const pkg = require('./package.json');
-const libraryName = pkg.name;
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const HtmlWebPackPlugin = require("html-webpack-plugin");
 
 module.exports = (env, options) => {
   const isDevMode = (options.mode !== 'production');
 
   const commonConfig = {
     entry: {
-      diamodal: './src/index.js',
+      test: './test/index.js',
     },
     output: {
-      path: path.resolve(__dirname, 'lib'),
-      filename: libraryName + (isDevMode ? '.js' : '.min.js'),
-      library: libraryName,
-      libraryTarget: 'umd',
-      umdNamedDefine: true
+      path: path.resolve(__dirname, 'test-build'),
+      filename: '[name].js'
     },
     module: {
       rules: [
@@ -33,7 +30,7 @@ module.exports = (env, options) => {
         {
           test: /\.(sa|sc|c)ss$/,
           use: [
-            MiniCssExtractPlugin.loader,
+            isDevMode ? 'style-loader' : MiniCssExtractPlugin.loader,
             'css-loader',
             'postcss-loader',
             'sass-loader',
@@ -67,19 +64,18 @@ module.exports = (env, options) => {
       ]
     },
     plugins: [
-      new MiniCssExtractPlugin({
-        filename: libraryName + (isDevMode ? '.css' : '.min.css'),
-      }),
+      new CleanWebpackPlugin([
+        'test-build',
+      ]),
     ],
-    resolve: {
-      modules: [path.resolve('./node_modules'), path.resolve('./src')],
-      extensions: ['.json', '.js']
-    }
   }
 
   const devConfig = {
     plugins: [
       new webpack.HotModuleReplacementPlugin(),
+      new HtmlWebPackPlugin({
+        template: "./test/index.html",
+      }),
     ],
     devtool: 'source-map',
     devServer: {
@@ -111,6 +107,9 @@ module.exports = (env, options) => {
         cache: true,
         parallel: true,
         sourceMap: true // set to true if you want JS source maps
+      }),
+      new MiniCssExtractPlugin({
+        filename: 'diamodal.css',
       }),
     ],
   }

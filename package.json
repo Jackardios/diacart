@@ -1,14 +1,29 @@
 {
   "name": "diacart",
-  "version": "1.0.0",
-  "description": "Simple JS cart",
-  "main": "index.js",
+  "version": "0.0.1",
+  "description": "Simple shopping cart",
+  "main": "./lib/diacart.js",
+  "keywords": [
+    "es6",
+    "shopping",
+    "cart",
+    "plugin"
+  ],
   "scripts": {
-    "start": "webpack-dev-server --mode development --open",
-    "build": "webpack --mode development ./src/index.js --output ./dist/main.js",
-    "build:production": "webpack --mode production ./src/index.js --output ./dist/main.js"
+    "build:dev": "webpack --mode development",
+    "build:prod": "webpack --mode production",
+    "build": "npm run build:dev && npm run build:prod",
+    "test": "webpack-dev-server --mode development --open --config webpack.test.config.js"
   },
-  "author": "",
+  "author": "Salakhutdinov Salavat <salahutdinov.salavat@gmail.com> (https://github.com/Jackardios)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Jackardios/diacart.git"
+  },
+  "homepage": "https://github.com/Jackardios/diacart",
+  "bugs": {
+    "url": "https://github.com/Jackardios/diacart/issues"
+  },
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.1.2",
