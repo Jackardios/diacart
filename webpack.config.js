@@ -11,9 +11,7 @@ module.exports = (env, options) => {
   const isDevMode = (options.mode !== 'production');
 
   const commonConfig = {
-    entry: {
-      diamodal: './src/index.js',
-    },
+    entry: './src/index.js',
     output: {
       path: path.resolve(__dirname, 'lib'),
       filename: libraryName + (isDevMode ? '.js' : '.min.js'),
