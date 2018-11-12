@@ -1,0 +1,68 @@
+.diacart-item {
+  @extend %border-box-children;
+  // padding: $diacart-base-offset 0;
+  min-height: 200px + $diacart-base-offset;
+
+  &:not(:first-child) {
+    border-top: 1px solid $diacart-color-gray--light;
+  }
+  
+  &__image-col {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    max-height: 300px;
+    overflow: hidden;
+
+    @include bp-from( sm ) {
+      width: 250px;
+      max-height: 200px;
+    }
+
+    @include bp-from( md ) {
+      width: 300px;
+    }
+  }
+
+    &__image {
+      display: block;
+      width: auto;
+      max-width: 100%;
+      height: auto;
+
+      @include bp-from(sm) {
+        width: 100%;
+      }
+    }
+
+  &__text-col {
+    @include bp-from( md ) {
+      width: 300px;
+    }
+
+    @include bp-before( sm ) {
+      width: 100%;
+      max-height: 300px;
+    }
+  }
+
+    &__title {
+      display: block;
+      margin: $diacart-base-offset 0;
+      font-size: $diacart-base-font-size * 1.125;
+      // font-weight: bold;
+      text-decoration: none;
+      color: $diacart-color-dark;
+    }
+
+    &__price {
+      margin: 0 0 $diacart-base-offset 0;
+      font-family: $diacart-numbers-font;
+      font-size: $diacart-base-font-size * 1.5;
+      font-weight: bold;
+    }
+
+    &__quantity {
+
+    }
+}

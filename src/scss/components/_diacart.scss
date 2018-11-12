@@ -1,0 +1,51 @@
+.diacart {
+  @extend %border-box-children;
+  padding: $diacart-base-offset;
+  font-family: $diacart-base-font;
+  font-size: $diacart-base-font-size;
+  color: $diacart-color-dark;
+
+  @include bp-from(sm) {
+    padding: $diacart-base-offset * 1.875;
+  }
+
+  &__header {
+    border-bottom: 1px solid $diacart-color-gray--light;
+    padding: 0 0 $diacart-base-offset 0;
+  }
+
+    &__title {
+      font-size: $diacart-base-font-size * 2;
+      font-weight: bold;
+    }
+
+
+  // &__items {
+  //   margin: 0 -$diacart-base-offset;
+  // }
+
+  &__footer {
+    text-align: right;
+    border-top: 1px solid $diacart-color-gray--light;
+    padding: #{$diacart-base-offset -12px} 0 0 0;
+
+    &-container {
+      margin: 0 -12px;
+    }
+  }
+
+  &__total-price,
+  &__order-btn {
+    @extend %inline-block-middle;
+    margin: 12px 12px 0;
+  }
+
+  &__total-price {
+    [data-diacart-total-price-container] {
+      font-family: $diacart-numbers-font;
+      font-size: $diacart-base-font-size * 1.5;
+      font-weight: bold;
+    }
+  }
+
+}

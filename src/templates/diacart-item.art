@@ -1,0 +1,28 @@
+<div class="diacart-item" data-diamodal-item data-diacart-item-id="{{ $data.item.id || '' }}">
+  <div class="diacart-grid">
+    {{if ($data.item.obj.image) }}
+      <div class="diacart-grid-col diacart-grid-col--v-gutter diacart-grid-col--auto diacart-item__image-col">
+        <a href="{{ $data.item.obj.link || '' }}" class="diacart-item__image-container">
+          <img src="{{ $data.item.obj.image || ''  }}" alt="{{ $data.item.obj.name || '' }}" class="diacart-item__image">
+        </a>
+      </div>
+    {{/if}}
+    <div class="diacart-grid-col diacart-grid-col--v-gutter diacart-grid-col--flex diacart-item__text-col">
+      {{if $data.itemHasPrice && $data.item.obj.price}}
+        <div class="diacart-item__price">{{ $data.item.obj.price || '' }}{{ $data.currency || '' }}</div>
+      {{/if}}
+      <a href="{{ $data.item.obj.link || '' }}" class="diacart-item__title">{{ $data.item.obj.name || '' }}</a>
+      {{if $data.itemHasQuantity && $data.item.obj.quantity}}
+        <div class="diacart-item__quantity">
+          <input type="number" name="quantity"
+            data-diacart-quantity-input
+            data-diacart-item-id="{{ $data.item.id || '' }}"
+            value="{{ $data.item.obj.quantity || 1 }}">
+        </div>
+      {{/if}}
+      <button class="diacart-item__remove-btn"
+        data-diacart-remove-from-cart
+        data-diacart-item-id="{{ $data.item.id || '' }}">{{@ $data.removeFromCartBtnText || '' }}</button>
+    </div>
+  </div>
+</div>

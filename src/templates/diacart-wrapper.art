@@ -1,0 +1,14 @@
+<div class="diacart-wrapper">
+  <section class="diacart">
+    <div class="diacart__header">
+      <div class="diacart__title">{{ $data.title || '' }}</div>
+    </div>
+    <div class="diacart__items" data-diacart-items-container></div>
+    <div class="diacart__footer">
+      <div class="diacart__footer-container">
+        <div class="diacart__total-price">{{ $data.totalPriceText ? ($data.totalPriceText + ': ') : '' }}<span data-diacart-total-price-container></span></div>
+        <button class="diacart__order-btn diacart-btn diacart-btn--primary diacart-btn--medium" data-diacart-order>{{ $data.orderBtnText || '' }}</button>
+      </div>
+    </div>
+  </section>
+</div>

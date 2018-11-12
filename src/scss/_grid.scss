@@ -1,0 +1,74 @@
+.diacart-wrapper {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: $diacart-base-offset;
+  padding-right: $diacart-base-offset;
+}
+
+.diacart-grid {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -$diacart-base-offset;
+  margin-right: -$diacart-base-offset;
+
+  &--no-wrap {
+    flex-wrap: nowrap;
+  }
+
+  &--no-gutter {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  &--no-gutter &-col {
+    padding-left: 0;
+    padding-right: 0;
+
+    &--v-gutter {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+  }
+
+  &-col {
+    padding-left: $diacart-base-offset;
+    padding-right: $diacart-base-offset;
+    box-sizing: border-box;
+    position: relative;
+    min-height: 1px;
+    width: 100%;
+
+    &--v-gutter {
+      padding-top: $diacart-base-offset;
+      padding-bottom: $diacart-base-offset;
+    }
+
+    &--auto {
+      flex: 0 0 auto;
+      width: auto;
+      max-width: none;
+    }
+
+    &--flex {
+      flex-basis: 0;
+      flex-grow: 1;
+      max-width: 100%;
+    }
+
+    // @for $i from 1 through 12 {
+    //   &-${$i} {
+    //     display: block;
+    //     $width: 100% / 12 * $i;
+    //     flex: 0 0 $width;
+    //     max-width: $width;
+    //   }
+
+    //   @each $bp-name, $bp-value in $diacart-breakpoints {
+    //     &-${$bp-name} {
+          
+    //     }
+    //   }
+    // }
+  }
+}

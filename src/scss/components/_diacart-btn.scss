@@ -1,0 +1,36 @@
+.diacart-btn {
+  @extend %border-box-children;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  font-family: $diacart-buttons-font;
+  font-size: $diacart-buttons-font-size;
+  overflow: hidden;
+  appearance: none;
+  text-decoration: none;
+  background: none;
+  border: none;
+  border-radius: 3px;
+  transition: all .24s ease;
+
+  &--medium {
+    padding: 10px 16px;
+  }
+
+  &--primary {
+    color: #fff;
+    background-color: $diacart-color-primary;
+    &:hover {
+      background-color: $diacart-color-primary--dark;
+    }
+  }
+
+  &--error {
+    color: #fff;
+    background-color: $diacart-color-error;
+    &:hover {
+      background-color: $diacart-color-error--dark;
+    }
+  }
+}

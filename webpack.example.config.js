@@ -11,12 +11,10 @@ module.exports = (env, options) => {
   const isDevMode = (options.mode !== 'production');
 
   const commonConfig = {
-    entry: {
-      test: './test/index.js',
-    },
+    entry: ['./example/index.js'],
     output: {
-      path: path.resolve(__dirname, 'test-build'),
-      filename: '[name].js'
+      path: path.resolve(__dirname, 'example-build'),
+      filename: 'build.js'
     },
     module: {
       rules: [
@@ -65,7 +63,7 @@ module.exports = (env, options) => {
     },
     plugins: [
       new CleanWebpackPlugin([
-        'test-build',
+        'example-build',
       ]),
     ],
   }
@@ -74,7 +72,12 @@ module.exports = (env, options) => {
     plugins: [
       new webpack.HotModuleReplacementPlugin(),
       new HtmlWebPackPlugin({
-        template: "./test/index.html",
+        filename: "index.html",
+        template: "./example/index.html",
+      }),
+      new HtmlWebPackPlugin({
+        filename: "cart.html",
+        template: "./example/cart.html",
       }),
     ],
     devtool: 'source-map',

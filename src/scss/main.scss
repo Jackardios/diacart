@@ -1,7 +1,9 @@
-.parent {
-  text-align: center;
-  color: #fff;
-  &__clild {
-    display: flex;
-  }
-}
+@import "./placeholders";
+@import "./colors";
+@import "./variables";
+@import "./mixins";
+@import "./grid";
+
+@import "./components/diacart";
+@import "./components/diacart-item";
+@import "./components/diacart-btn";

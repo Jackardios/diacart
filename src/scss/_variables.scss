@@ -1,0 +1,21 @@
+// font
+$diacart-base-font: 'Verdana', sans-serif !default;
+$diacart-numbers-font: $diacart-base-font !default;
+$diacart-buttons-font: $diacart-base-font !default;
+$diacart-base-font-size: 16px !default;
+$diacart-buttons-font-size: 14px !default;
+
+// grid
+$diacart-base-offset: 15px;
+$diacart-breakpoints: (
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px
+) !default;
+
+// easings
+// $ease-out-cubic: cubic-bezier(0.2, 0.5, 0.3, 1) !default;
+// $ease-in-out-cubic: cubic-bezier(0.645, 0.045, 0.355, 1) !default;
+// $ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1) !default;
+// $wind-easing: cubic-bezier(0.11, 0.815, 0.195, 0.95) !default;

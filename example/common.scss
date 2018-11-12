@@ -1,0 +1,71 @@
+@import "../src/scss/main";
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
+.wrapper {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-top: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.cards-container {
+  display: flex;
+  flex-wrap: wrap;
+
+  justify-content: center;
+  margin-left: -15px;
+  margin-right: -15px;
+}
+
+.primary-card {
+  display: block;
+  width: 300px;
+  max-width: 100%;
+  border: 1px solid $diacart-color-gray--light;
+  margin: 15px;
+  
+  &__image-container {
+    &,
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  &__content-container {
+    padding: 15px;
+  }
+
+  &__title {
+    margin: 0 0 1rem;
+
+  }
+  
+  &__price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: $diacart-color-error;
+    margin-top: 1rem;
+  }
+
+  &__add-to-cart-btn {
+    margin-top: 1rem;
+  }
+}

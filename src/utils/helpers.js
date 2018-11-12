@@ -7,7 +7,7 @@ function createElementFromHTML(htmlString) {
   div.innerHTML = htmlString.trim();
 
   // Change this to div.childNodes to support multiple top-level nodes
-  return div.firstChild; 
+  return div.firstChild;
 }
 
 function addClass(el, className) {
@@ -25,11 +25,23 @@ function removeClass(el, className) {
 }
 
 function ready(fn) {
-  if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading"){
+  if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
     fn();
   } else {
     document.addEventListener('DOMContentLoaded', fn);
   }
+}
+
+function addDelegatedEventListener(element, eventName, selector, handler) {
+  element.addEventListener(eventName, function (e) {
+    for (var target = e.target; target && target != this; target = target.parentNode) {
+      // loop parent nodes from the target to the delegation node
+      if (target.matches(selector)) {
+        handler.call(target, e);
+        break;
+      }
+    }
+  }, false);
 }
 
 export {
@@ -38,4 +50,5 @@ export {
   addClass,
   removeClass,
   ready,
+  addDelegatedEventListener
 };

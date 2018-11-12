@@ -1,0 +1,9 @@
+$diacart-color-primary: #2196f3 !default;
+$diacart-color-primary--dark: darken($diacart-color-primary, 7%) !default;
+$diacart-color-primary--light: lighten($diacart-color-primary, 5%) !default;
+$diacart-color-accent: $diacart-color-primary--dark !default;
+$diacart-color-dark: #1d1d1d !default;
+$diacart-color-gray--light: #ededee !default;
+$diacart-color-gray--dark: #9c9c9c !default;
+$diacart-color-error: #f44336 !default;
+$diacart-color-error--dark: darken($diacart-color-error, 7%) !default;

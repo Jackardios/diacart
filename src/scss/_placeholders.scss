@@ -1,0 +1,29 @@
+%fill-absolute {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+}
+
+%inline-block-middle {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+%border-box-children {
+  box-sizing: border-box;
+  *,
+  *::before,
+  *::after {
+    box-sizing: inherit;
+  }
+}
+
+%flex-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}

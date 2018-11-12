@@ -1,0 +1,10 @@
+@mixin bp-before($bp-name, $breakpoints: $diacart-breakpoints) { 
+  @if map-has-key($breakpoints, $bp-name) {
+    @media (max-width: #{map-get($breakpoints, $bp-name) - 1px}) {
+      @content;
+    }
+  }
+  @else {
+    @warn "Unfortunately, no value could be retrieved from `#{$breakpoint}`. ";
+  }
+}
