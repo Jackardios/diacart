@@ -1,5 +1,6 @@
 import ObjectsLocalStorage from "./ObjectsLocalStorage";
 import { addDelegatedEventListener } from "../utils/helpers";
+import diacartCounterInit from "../components/diacartCounterInit";
 
 const defaultItem = {
   id: null,
@@ -16,8 +17,8 @@ const defaultOptions = {
   title: 'Корзина покупок',
   totalPriceText: 'Итоговая сумма',
   totalQuantityText: 'Количество',
-  removeFromCartBtnText: require('raw-loader!../images/close.svg'),
-  emptyCartText: '<h2>Ваша корзина пуста<h2>',
+  removeFromCartBtnText: '',
+  emptyCartText: '<div class="diacart-empty"><h2 class="diacart-empty__title">Ваша корзина пуста</h2></div>',
   orderBtnText: 'Оформить заказ',
 
   currency: 'р.',
@@ -84,6 +85,7 @@ class Diacart {
     this.refreshTotalPrice();
     this._attachEventHandlers();
     this._options.onInit(this);
+    diacartCounterInit(this._itemsContainer);
   }
 
   _attachEventHandlers() {
@@ -92,7 +94,6 @@ class Diacart {
     });
     addDelegatedEventListener(document, "click", this._options.addToCartBtnSelector, (e) => {
       const json = e.target.getAttribute('data-diacart-item-json');
-      console.dir(json);
       const item = JSON.parse(json);
       this.add(item);
     });

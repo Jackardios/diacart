@@ -1,6 +1,7 @@
 .diacart-item {
   @extend %border-box-children;
-  // padding: $diacart-base-offset 0;
+  position: relative;
+  padding: $diacart-base-offset 0;
   min-height: 200px + $diacart-base-offset;
 
   &:not(:first-child) {
@@ -9,18 +10,14 @@
   
   &__image-col {
     display: block;
-    width: 100%;
+    width: 175px;
     max-width: 100%;
-    max-height: 300px;
+    max-height: 250px;
     overflow: hidden;
-
-    @include bp-from( sm ) {
-      width: 250px;
-      max-height: 200px;
-    }
-
+    
     @include bp-from( md ) {
       width: 300px;
+      max-height: 300px;
     }
   }
 
@@ -36,33 +33,49 @@
     }
 
   &__text-col {
+    padding-right: 50px + $diacart-base-offset;
+    width: 100%;
+    min-width: 300px;
+    max-height: 300px;
+
     @include bp-from( md ) {
       width: 300px;
-    }
-
-    @include bp-before( sm ) {
-      width: 100%;
-      max-height: 300px;
     }
   }
 
     &__title {
+      @extend %font-size-3;
       display: block;
       margin: $diacart-base-offset 0;
-      font-size: $diacart-base-font-size * 1.125;
       // font-weight: bold;
       text-decoration: none;
       color: $diacart-color-dark;
     }
 
     &__price {
+      @extend %font-size-2;
       margin: 0 0 $diacart-base-offset 0;
       font-family: $diacart-numbers-font;
-      font-size: $diacart-base-font-size * 1.5;
       font-weight: bold;
     }
 
     &__quantity {
 
     }
+  &__remove-btn {
+    @extend .diacart-btn;
+    @extend %bg-cover;
+    position: absolute;
+    top: $diacart-base-offset*2;
+    right: 0;
+    width: 28px;
+    height: 28px;
+    opacity: 0.3;
+    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pg0KPHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJMYXllcl8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCINCiB2aWV3Qm94PSIwIDAgNTEyIDUxMiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNTEyIDUxMjsiIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KCTxwYXRoIGQ9Ik01MDUuOTQzLDYuMDU4Yy04LjA3Ny04LjA3Ny0yMS4xNzItOC4wNzctMjkuMjQ5LDBMNi4wNTgsNDc2LjY5M2MtOC4wNzcsOC4wNzctOC4wNzcsMjEuMTcyLDAsMjkuMjQ5DQoJCQlDMTAuMDk2LDUwOS45ODIsMTUuMzksNTEyLDIwLjY4Myw1MTJjNS4yOTMsMCwxMC41ODYtMi4wMTksMTQuNjI1LTYuMDU5TDUwNS45NDMsMzUuMzA2DQoJCQlDNTE0LjAxOSwyNy4yMyw1MTQuMDE5LDE0LjEzNSw1MDUuOTQzLDYuMDU4eiIgLz4NCgk8cGF0aCBkPSJNNTA1Ljk0Miw0NzYuNjk0TDM1LjMwNiw2LjA1OWMtOC4wNzYtOC4wNzctMjEuMTcyLTguMDc3LTI5LjI0OCwwYy04LjA3Nyw4LjA3Ni04LjA3NywyMS4xNzEsMCwyOS4yNDhsNDcwLjYzNiw0NzAuNjM2DQoJCQljNC4wMzgsNC4wMzksOS4zMzIsNi4wNTgsMTQuNjI1LDYuMDU4YzUuMjkzLDAsMTAuNTg3LTIuMDE5LDE0LjYyNC02LjA1N0M1MTQuMDE4LDQ5Ny44NjYsNTE0LjAxOCw0ODQuNzcxLDUwNS45NDIsNDc2LjY5NHoiIC8+DQo8L3N2Zz4NCg==);
+    transition: opacity .24s ease;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
 }

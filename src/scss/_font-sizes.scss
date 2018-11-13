@@ -1,0 +1,31 @@
+%font-size-1 {
+  font-size: $diacart-base-font-size * 1.5;
+
+  @include bp-from(md) {
+    font-size: $diacart-base-font-size * 1.75;
+  }
+}
+
+%font-size-2 {
+  font-size: $diacart-base-font-size * 1.25;
+
+  @include bp-from(md) {
+    font-size: $diacart-base-font-size * 1.5;
+  }
+}
+
+%font-size-3 {
+  font-size: $diacart-base-font-size * 1.125;
+}
+
+%font-size-4 {
+  font-size: $diacart-base-font-size;
+}
+
+%font-size-5 {
+  font-size: $diacart-base-font-size * 0.875;
+}
+
+%font-size-6 {
+  font-size: $diacart-base-font-size * 0.75;
+}

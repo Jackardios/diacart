@@ -13,11 +13,15 @@
       {{/if}}
       <a href="{{ $data.item.obj.link || '' }}" class="diacart-item__title">{{ $data.item.obj.name || '' }}</a>
       {{if $data.itemHasQuantity && $data.item.obj.quantity}}
-        <div class="diacart-item__quantity">
-          <input type="number" name="quantity"
-            data-diacart-quantity-input
-            data-diacart-item-id="{{ $data.item.id || '' }}"
-            value="{{ $data.item.obj.quantity || 1 }}">
+        <div class="diacart-item__quantity diacart-counter">
+          <div class="diacart-counter__container diacart-grid diacart-grid--no-gutter">
+            <button class="diacart-grid__col diacart-grid__col--auto diacart-counter__btn diacart-counter__plus-btn">+</button>
+            <input class="diacart-grid__col diacart-grid__col--flex diacart-counter__input" type="number" name="quantity"
+              data-diacart-quantity-input
+              data-diacart-item-id="{{ $data.item.id || '' }}"
+              value="{{ $data.item.obj.quantity || 1 }}">
+            <button class="diacart-grid__col diacart-grid__col--auto diacart-counter__btn diacart-counter__minus-btn">-</button>
+          </div>
         </div>
       {{/if}}
       <button class="diacart-item__remove-btn"

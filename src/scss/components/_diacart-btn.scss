@@ -14,6 +14,11 @@
   border-radius: 3px;
   transition: all .24s ease;
 
+  * {
+    user-select: none;
+    pointer-events: none;
+  }
+
   &--medium {
     padding: 10px 16px;
   }

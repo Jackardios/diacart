@@ -1,0 +1,24 @@
+$diacart-counter-button-size: 30px;
+.diacart-counter {
+  display: inline-block;
+  width: auto;
+  height: auto;
+
+  &__container {
+
+  }
+
+  &__btn {
+    @extend .diacart-btn;
+    width: $diacart-counter-button-size;
+    height: $diacart-counter-button-size;
+    font-size: 20px;
+  }
+
+  &__input {
+    width: 70px;
+    text-align: center;
+    border: 1px solid $diacart-color-gray--light;
+    font-size: 18px;
+  }
+}

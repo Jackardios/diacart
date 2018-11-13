@@ -1,0 +1,11 @@
+.diacart-empty {
+  padding: #{$diacart-base-offset * 5} $diacart-base-offset;
+  text-align: center;
+
+  &__title {
+    @extend %font-size-3;
+    margin: 0;
+    font-weight: normal;
+    color: $diacart-color-gray--dark;
+  }
+}

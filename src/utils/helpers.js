@@ -32,7 +32,7 @@ function ready(fn) {
   }
 }
 
-function addDelegatedEventListener(element, eventName, selector, handler) {
+function addDelegatedEventListener(element, eventName, selector, handler, useCapture = false) {
   element.addEventListener(eventName, function (e) {
     for (var target = e.target; target && target != this; target = target.parentNode) {
       // loop parent nodes from the target to the delegation node
@@ -41,7 +41,28 @@ function addDelegatedEventListener(element, eventName, selector, handler) {
         break;
       }
     }
-  }, false);
+  }, useCapture);
+}
+
+
+function triggerEvent(element, eventName) {
+  var event;
+
+  if (document.createEvent) {
+    event = document.createEvent("HTMLEvents");
+    event.initEvent(eventName, true, true);
+  } else {
+    event = document.createEventObject();
+    event.eventType = eventName;
+  }
+
+  event.eventName = eventName;
+
+  if (document.createEvent) {
+    element.dispatchEvent(event);
+  } else {
+    element.fireEvent("on" + event.eventType, event);
+  }
 }
 
 export {
@@ -50,5 +71,6 @@ export {
   addClass,
   removeClass,
   ready,
-  addDelegatedEventListener
+  addDelegatedEventListener,
+  triggerEvent
 };
