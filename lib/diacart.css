@@ -2,20 +2,32 @@
   display: inline-block;
   vertical-align: middle; }
 
-.diacart, .diacart-item, .diacart-btn {
+.diacart-btn, .diacart-item__remove-btn, .diacart-counter__btn, .diacart, .diacart-item {
   -webkit-box-sizing: border-box;
      -moz-box-sizing: border-box;
           box-sizing: border-box; }
-  .diacart *, .diacart-item *, .diacart-btn *,
+  .diacart-btn *, .diacart-item__remove-btn *, .diacart-counter__btn *, .diacart *, .diacart-item *,
+  .diacart-btn *::before,
+  .diacart-item__remove-btn *::before,
+  .diacart-counter__btn *::before,
   .diacart *::before,
   .diacart-item *::before,
-  .diacart-btn *::before,
+  .diacart-btn *::after,
+  .diacart-item__remove-btn *::after,
+  .diacart-counter__btn *::after,
   .diacart *::after,
-  .diacart-item *::after,
-  .diacart-btn *::after {
+  .diacart-item *::after {
     -webkit-box-sizing: inherit;
        -moz-box-sizing: inherit;
             box-sizing: inherit; }
+
+.diacart-item__remove-btn {
+  background-repeat: no-repeat;
+  -webkit-background-size: cover;
+     -moz-background-size: cover;
+       -o-background-size: cover;
+          background-size: cover;
+  background-position: 50%; }
 
 .diacart-wrapper {
   max-width: 1200px;
@@ -54,7 +66,6 @@
     -webkit-box-sizing: border-box;
        -moz-box-sizing: border-box;
             box-sizing: border-box;
-    position: relative;
     min-height: 1px;
     width: 100%; }
     .diacart-grid-col--v-gutter {
@@ -79,58 +90,19 @@
               flex-grow: 1;
       max-width: 100%; }
 
+.diacart__title {
+  font-size: 24px; }
+
+.diacart__total-price [data-diacart-total-price-container], .diacart-item__price {
+  font-size: 20px; }
+
+.diacart-item__title, .diacart-empty__title {
+  font-size: 18px; }
+
 .diacart {
-  padding: 15px;
-  font-family: "Verdana", sans-serif;
-  font-size: 16px;
-  color: #1d1d1d; }
-  .diacart__header {
-    border-bottom: 1px solid #ededee;
-    padding: 0 0 15px 0; }
-  .diacart__title {
-    font-size: 32px;
-    font-weight: bold; }
-  .diacart__footer {
-    text-align: right;
-    border-top: 1px solid #ededee;
-    padding: 15px -12px 0 0 0; }
-    .diacart__footer-container {
-      margin: 0 -12px; }
-  .diacart__total-price, .diacart__order-btn {
-    margin: 12px 12px 0; }
-  .diacart__total-price [data-diacart-total-price-container] {
-    font-family: "Verdana", sans-serif;
-    font-size: 24px;
-    font-weight: bold; }
+  font-size: 16px; }
 
-.diacart-item {
-  min-height: 215px; }
-  .diacart-item:not(:first-child) {
-    border-top: 1px solid #ededee; }
-  .diacart-item__image-col {
-    display: block;
-    width: 100%;
-    max-width: 100%;
-    max-height: 300px;
-    overflow: hidden; }
-  .diacart-item__image {
-    display: block;
-    width: auto;
-    max-width: 100%;
-    height: auto; }
-  .diacart-item__title {
-    display: block;
-    margin: 15px 0;
-    font-size: 18px;
-    text-decoration: none;
-    color: #1d1d1d; }
-  .diacart-item__price {
-    margin: 0 0 15px 0;
-    font-family: "Verdana", sans-serif;
-    font-size: 24px;
-    font-weight: bold; }
-
-.diacart-btn {
+.diacart-btn, .diacart-item__remove-btn, .diacart-counter__btn {
   cursor: pointer;
   position: relative;
   z-index: 1;
@@ -151,6 +123,12 @@
   -o-transition: all .24s ease;
   -moz-transition: all .24s ease;
   transition: all .24s ease; }
+  .diacart-btn *, .diacart-item__remove-btn *, .diacart-counter__btn * {
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+    pointer-events: none; }
   .diacart-btn--medium {
     padding: 10px 16px; }
   .diacart-btn--primary {
@@ -163,23 +141,109 @@
     background-color: #f44336; }
     .diacart-btn--error:hover {
       background-color: #f22314; }
-    @media (min-width: 576px) {
-    .diacart {
-      padding: 28.125px; }
-      .diacart-item__image-col {
-        width: 250px;
-        max-height: 200px; }
+
+.diacart {
+  padding: 30px 15px;
+  font-family: "Verdana", sans-serif;
+  color: #1d1d1d;
+  min-width: 250px; }
+  .diacart__header {
+    border-bottom: 1px solid #ededee;
+    padding: 0 0 15px 0; }
+  .diacart__title {
+    font-weight: bold; }
+  .diacart__footer {
+    text-align: right;
+    border-top: 1px solid #ededee;
+    padding: 15px -12px 0 0 0; }
+    .diacart__footer-container {
+      margin: 0 -12px; }
+  .diacart__total-price, .diacart__order-btn {
+    margin: 12px 12px 0; }
+  .diacart__total-price [data-diacart-total-price-container] {
+    font-family: "Verdana", sans-serif;
+    font-weight: bold; }
+
+.diacart-item {
+  position: relative;
+  padding: 15px 0;
+  min-height: 215px; }
+  .diacart-item:not(:first-child) {
+    border-top: 1px solid #ededee; }
+  .diacart-item__image-col {
+    display: block;
+    width: 175px;
+    max-width: 100%;
+    max-height: 250px;
+    overflow: hidden; }
+  .diacart-item__image {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto; }
+  .diacart-item__text-col {
+    padding-right: 65px;
+    width: 100%;
+    min-width: 300px;
+    max-height: 300px; }
+  .diacart-item__title {
+    display: block;
+    margin: 15px 0;
+    text-decoration: none;
+    color: #1d1d1d; }
+  .diacart-item__price {
+    margin: 0 0 15px 0;
+    font-family: "Verdana", sans-serif;
+    font-weight: bold; }
+  .diacart-item__remove-btn {
+    position: absolute;
+    top: 30px;
+    right: 0;
+    width: 28px;
+    height: 28px;
+    opacity: 0.3;
+    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pg0KPHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJMYXllcl8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCINCiB2aWV3Qm94PSIwIDAgNTEyIDUxMiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNTEyIDUxMjsiIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KCTxwYXRoIGQ9Ik01MDUuOTQzLDYuMDU4Yy04LjA3Ny04LjA3Ny0yMS4xNzItOC4wNzctMjkuMjQ5LDBMNi4wNTgsNDc2LjY5M2MtOC4wNzcsOC4wNzctOC4wNzcsMjEuMTcyLDAsMjkuMjQ5DQoJCQlDMTAuMDk2LDUwOS45ODIsMTUuMzksNTEyLDIwLjY4Myw1MTJjNS4yOTMsMCwxMC41ODYtMi4wMTksMTQuNjI1LTYuMDU5TDUwNS45NDMsMzUuMzA2DQoJCQlDNTE0LjAxOSwyNy4yMyw1MTQuMDE5LDE0LjEzNSw1MDUuOTQzLDYuMDU4eiIgLz4NCgk8cGF0aCBkPSJNNTA1Ljk0Miw0NzYuNjk0TDM1LjMwNiw2LjA1OWMtOC4wNzYtOC4wNzctMjEuMTcyLTguMDc3LTI5LjI0OCwwYy04LjA3Nyw4LjA3Ni04LjA3NywyMS4xNzEsMCwyOS4yNDhsNDcwLjYzNiw0NzAuNjM2DQoJCQljNC4wMzgsNC4wMzksOS4zMzIsNi4wNTgsMTQuNjI1LDYuMDU4YzUuMjkzLDAsMTAuNTg3LTIuMDE5LDE0LjYyNC02LjA1N0M1MTQuMDE4LDQ5Ny44NjYsNTE0LjAxOCw0ODQuNzcxLDUwNS45NDIsNDc2LjY5NHoiIC8+DQo8L3N2Zz4NCg==);
+    -webkit-transition: opacity .24s ease;
+    -o-transition: opacity .24s ease;
+    -moz-transition: opacity .24s ease;
+    transition: opacity .24s ease; }
+    .diacart-item__remove-btn:hover {
+      opacity: 1; }
+
+.diacart-counter {
+  display: inline-block;
+  width: auto;
+  height: auto; }
+  .diacart-counter__btn {
+    width: 30px;
+    height: 30px;
+    font-size: 20px; }
+  .diacart-counter__input {
+    width: 70px;
+    text-align: center;
+    border: 1px solid #ededee;
+    font-size: 18px; }
+
+.diacart-empty {
+  padding: 75px 15px;
+  text-align: center; }
+  .diacart-empty__title {
+    margin: 0;
+    font-weight: normal;
+    color: #9c9c9c; }
+  @media (min-width: 576px) {
       .diacart-item__image {
         width: 100%; } }
-    @media (min-width: 768px) {
+  @media (min-width: 768px) {
+    .diacart__title {
+      font-size: 28px; }
+    .diacart__total-price [data-diacart-total-price-container], .diacart-item__price {
+      font-size: 24px; }
       .diacart-item__image-col {
-        width: 300px; }
-    .diacart-item__text-col {
-      width: 300px; } }
-    @media (max-width: 575px) {
-    .diacart-item__text-col {
-      width: 100%;
-      max-height: 300px; } }
+        width: 300px;
+        max-height: 300px; }
+      .diacart-item__text-col {
+        width: 300px; } }
 
 
 /*# sourceMappingURL=diacart.css.map*/
