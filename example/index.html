@@ -1,46 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Diacart Test</title>
-</head>
-<body>
-  <div class="wrapper">
-    <a href="/cart.html"><span data-diacart-total-price-container></span>(<span data-diacart-total-quantity-container></span>)</a>
-    <div class="cards-container">
-      <article class="primary-card">
-        <a href="https://picsum.photos/300/200?image=865" class="primary-card__image-container">
-          <img src="https://picsum.photos/300/200?image=865" alt="" class="primary-card__image">
-        </a>
-        <div class="primary-card__content-container">
-          <h2 class="primary-card__title">Lorem ipsum dolor (id123)</h2>
-          <div class="primary-card__price">299р.</div>
-          <a href="#"
-            class="primary-card__add-to-cart-btn diacart-btn diacart-btn--primary diacart-btn--medium"
-            data-diacart-item-json='{"id": 123, "name": "Lorem ipsum dolor (id123)", "price": 299, "image": "https://picsum.photos/300/200?image=865"}'
-            data-diacart-add-to-cart>
-            Добавить в корзину
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+      integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
+      crossorigin="anonymous"
+    />
+    <title>Diacart Test</title>
+  </head>
+  <body>
+    <div class="wrapper">
+      <a href="/cart.html"
+        ><span data-diacart-total-price-container></span>(<span
+          data-diacart-total-quantity-container
+        ></span
+        >)</a
+      >
+      <div class="cards-container">
+        <article class="primary-card">
+          <a
+            href="https://picsum.photos/300/200?image=865"
+            class="primary-card__image-container"
+          >
+            <img
+              src="https://picsum.photos/300/200?image=865"
+              alt=""
+              class="primary-card__image"
+            />
           </a>
-        </div>
-      </article>
-      <article class="primary-card">
-        <a href="https://picsum.photos/300/200?image=513" class="primary-card__image-container">
-          <img src="https://picsum.photos/300/200?image=513" alt="" class="primary-card__image">
-        </a>
-        <div class="primary-card__content-container">
-          <h2 class="primary-card__title">Aliquam vehicula dui purus (id46)</h2>
-          <div class="primary-card__price">1300р.</div>
-          <a href="#"
-            class="primary-card__add-to-cart-btn diacart-btn diacart-btn--primary diacart-btn--medium"
-            data-diacart-item-json='{"id": 46, "name": "Aliquam vehicula dui purus (id46)", "price": 1300, "image": "https://picsum.photos/300/200?image=513"}'
-            data-diacart-add-to-cart>
-            Добавить в корзину
+          <div class="primary-card__content-container">
+            <h2 class="primary-card__title">Lorem ipsum dolor (id123)</h2>
+            <div class="primary-card__price">299р.</div>
+            <a
+              href="#"
+              class="primary-card__add-to-cart-btn diacart-btn diacart-btn--primary diacart-btn--medium"
+              data-diacart-item-json="{&quot;id&quot;: 123, &quot;name&quot;: &quot;Lorem ipsum dolor (id123)&quot;, &quot;price&quot;: 299, &quot;image&quot;: &quot;https://picsum.photos/300/200?image=865&quot;}"
+              data-diacart-add-to-cart
+            >
+              <i class="fas fa-cart-plus"></i> Добавить в корзину
+            </a>
+          </div>
+        </article>
+        <article class="primary-card">
+          <a
+            href="https://picsum.photos/300/200?image=513"
+            class="primary-card__image-container"
+          >
+            <img
+              src="https://picsum.photos/300/200?image=513"
+              alt=""
+              class="primary-card__image"
+            />
           </a>
-        </div>
-      </article>
+          <div class="primary-card__content-container">
+            <h2 class="primary-card__title">
+              Aliquam vehicula dui purus (id46)
+            </h2>
+            <div class="primary-card__price">1300р.</div>
+            <a
+              href="#"
+              class="primary-card__add-to-cart-btn diacart-btn diacart-btn--primary diacart-btn--medium"
+              data-diacart-item-json="{&quot;id&quot;: 46, &quot;name&quot;: &quot;Aliquam vehicula dui purus (id46)&quot;, &quot;price&quot;: 1300, &quot;image&quot;: &quot;https://picsum.photos/300/200?image=513&quot;}"
+              data-diacart-add-to-cart
+            >
+              <i class="fas fa-cart-plus"></i> Добавить в корзину
+            </a>
+          </div>
+        </article>
+      </div>
     </div>
-  </div>
-</body>
+  </body>
 </html>

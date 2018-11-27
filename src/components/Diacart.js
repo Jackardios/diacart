@@ -112,7 +112,7 @@ class Diacart {
       "click",
       this._options.addToCartBtnSelector,
       e => {
-        const json = e.target.getAttribute("data-diacart-item-json");
+        const json = e.currentTarget.getAttribute("data-diacart-item-json");
         const item = JSON.parse(json);
         this.add(item);
       }
