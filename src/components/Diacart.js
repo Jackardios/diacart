@@ -66,10 +66,7 @@ const defaultOptions = {
 
 class Diacart {
   constructor(options) {
-    this._options = {};
-    for (let key in defaultOptions) {
-      this._options[key] = options[key] || defaultOptions[key];
-    }
+    this._options = Object.assign({}, defaultOptions, options);
     this.init();
   }
 
