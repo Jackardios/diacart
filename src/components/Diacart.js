@@ -239,6 +239,7 @@ class Diacart {
           } else {
             this._storage.add(item);
           }
+          this._options.onAdd(item);
           return;
         }
       }
