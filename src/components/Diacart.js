@@ -1,5 +1,9 @@
 import ObjectsLocalStorage from "./ObjectsLocalStorage";
-import { addDelegatedEventListener } from "../utils/helpers";
+import {
+  addDelegatedEventListener,
+  addClass,
+  removeClass
+} from "../utils/helpers";
 import diacartCounterInit from "../components/diacartCounterInit";
 
 const defaultItem = {
@@ -34,6 +38,7 @@ const defaultOptions = {
     //   label: 'Размер', // by default label === key
     // }
   ],
+  hiddenClass: "diacart-hidden",
 
   // templates
   wrapperTemplate: require("../templates/diacart-wrapper.art"), // template function
@@ -49,6 +54,7 @@ const defaultOptions = {
 
   itemsContainerSelector: "[data-diacart-items-container]",
   itemSelector: "[data-diacart-item]",
+  hiddenIfEmptySelector: "[data-diacart-hidden-if-empty]",
 
   addToCartBtnSelector: "[data-diacart-add-to-cart]",
   removeFromCartBtnSelector: "[data-diacart-remove-from-cart]",
@@ -87,9 +93,14 @@ class Diacart {
     this._totalQuantityContainers = document.querySelectorAll(
       this._options.totalQuantityContainerSelector
     );
+    this._hiddenIfEmpty = document.querySelectorAll(
+      this._options.hiddenIfEmptySelector
+    );
+
     this.renderCartItems();
     this.refreshTotalQuantity();
     this.refreshTotalPrice();
+    this.updateHiddenIfEmpty();
     this._attachEventHandlers();
     this._options.onInit(this);
     diacartCounterInit(this._itemsContainer);
@@ -270,14 +281,28 @@ class Diacart {
   };
 
   order = () => {
-    this._options.onOrder();
+    this._options.onOrder(this._storage.storage);
   };
 
   refresh = (prevStorage, nextStorage) => {
     this.refreshTotalPrice();
     this.refreshTotalQuantity();
     this.renderCartItems();
+    this.updateHiddenIfEmpty();
+
     // TODO: optimized cart items rerendering
+  };
+
+  updateHiddenIfEmpty = () => {
+    if (this._storage.storage.length) {
+      for (let i = 0; i < this._hiddenIfEmpty.length; ++i) {
+        removeClass(this._hiddenIfEmpty[i], this._options.hiddenClass);
+      }
+    } else {
+      for (let i = 0; i < this._hiddenIfEmpty.length; ++i) {
+        addClass(this._hiddenIfEmpty[i], this._options.hiddenClass);
+      }
+    }
   };
 
   refreshTotalPrice = () => {
