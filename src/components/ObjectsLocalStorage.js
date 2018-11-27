@@ -3,7 +3,6 @@
  * Класс, представляющий хранилище объектов
  */
 class ObjectsLocalStorage {
-
   /**
    * @param {!string} name - Storage name
    */
@@ -15,19 +14,25 @@ class ObjectsLocalStorage {
     this._onStorageUpdate = onStorageUpdate;
 
     // Synchronization between multiple tabs
-    window.addEventListener('storage', (event) => {
-      if (event.key === this._storageName) {
-        const prevStorage = this._storage;
-        this._storage = JSON.parse(event.newValue || '[]');
-        this._onStorageUpdate(prevStorage, this._storage);
-      }
-    }, false);
+    window.addEventListener(
+      "storage",
+      event => {
+        if (event.key === this._storageName) {
+          const prevStorage = this._storage;
+          this._storage = JSON.parse(event.newValue || "[]");
+          this._onStorageUpdate(prevStorage, this._storage);
+        }
+      },
+      false
+    );
   }
 
   get storage() {
     if (!this._storage) {
       const prevStorage = this._storage;
-      this._storage = JSON.parse(localStorage.getItem(this._storageName) || '[]');
+      this._storage = JSON.parse(
+        localStorage.getItem(this._storageName) || "[]"
+      );
       this._onStorageUpdate(prevStorage, this._storage);
     }
     return this._storage;
@@ -48,7 +53,7 @@ class ObjectsLocalStorage {
    */
   getLastId() {
     let lastObj = this.storage[this.storage.length - 1];
-    return (lastObj) ? lastObj.id : 0;
+    return lastObj ? lastObj.id : 0;
   }
 
   /**
@@ -57,7 +62,7 @@ class ObjectsLocalStorage {
    *
    * @param {Object} query - Query to match
    * @return {Object[]} Array of found objects
-   * 
+   *
    * @example
    * storage.findByQuery({foo: 'bar' baz: 200})
    */
@@ -65,7 +70,7 @@ class ObjectsLocalStorage {
     if (query) {
       return this.storage.filter(storageItem => {
         for (let key in query) {
-          if (query[key] !== storageItem['obj'][key]) {
+          if (query[key] !== storageItem["obj"][key]) {
             return false;
           }
         }
@@ -85,8 +90,8 @@ class ObjectsLocalStorage {
    */
   findById(id) {
     return this.storage.find(storageItem => {
-      return storageItem['id'] === id;
-    })['obj'];
+      return storageItem["id"] === id;
+    })["obj"];
   }
 
   /**
@@ -104,7 +109,7 @@ class ObjectsLocalStorage {
     const storage = this.storage;
     const cartItem = {
       id: this.getLastId() + 1,
-      obj: obj,
+      obj: obj
     };
 
     storage.push(cartItem);
@@ -120,7 +125,7 @@ class ObjectsLocalStorage {
    * @param {number} id - ID of the object being updated
    * @param {Object} updateObj - The object whose properties will be merged with the found object
    * @return {Object} The updated storage object or null
-   * 
+   *
    * @example
    * storage.update(1, {foo: 'bar', baz: 1})
    */
@@ -130,9 +135,9 @@ class ObjectsLocalStorage {
       let item;
 
       for (let i = 0; i < storage.length; ++i) {
-        if (storage[i]['id'] === id) {
-          item = Object.assign({}, storage[i]['obj'], updateObj);
-          storage[i]['obj'] = item;
+        if (storage[i]["id"] === id) {
+          item = Object.assign({}, storage[i]["obj"], updateObj);
+          storage[i]["obj"] = item;
           this.storage = storage;
           return item;
         }
@@ -153,7 +158,7 @@ class ObjectsLocalStorage {
     const storage = this.storage;
 
     for (let i = 0; i < storage.length; ++i) {
-      if (storage[i]['id'] === id) {
+      if (storage[i]["id"] === id) {
         let item = storage[i];
         storage.splice(i, 1);
         this.storage = storage;
@@ -168,8 +173,8 @@ class ObjectsLocalStorage {
    * Удалить объекты из хранилища по запросу.
    *
    * @param {Object} query - Query to match
-   * @return {boolean} The status of the operation 
-   * 
+   * @return {boolean} The status of the operation
+   *
    * @example
    * storage.removeByQuery({foo: 'bar', baz: 1})
    */
@@ -177,7 +182,7 @@ class ObjectsLocalStorage {
     if (query) {
       const storage = this.storage.filter(storageItem => {
         for (let key in query) {
-          if (query[key] !== storageItem['obj'][key]) {
+          if (query[key] !== storageItem["obj"][key]) {
             return true;
           }
         }
@@ -193,7 +198,7 @@ class ObjectsLocalStorage {
    * Remove all objects from the storage.
    * Удалить все объекты из хранилища.
    *
-   * @return {boolean} The status of the operation 
+   * @return {boolean} The status of the operation
    */
   clear() {
     this.storage = [];

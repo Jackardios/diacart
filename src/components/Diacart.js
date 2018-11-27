@@ -5,28 +5,29 @@ import diacartCounterInit from "../components/diacartCounterInit";
 const defaultItem = {
   id: null,
   link: null,
-  name: '',
+  name: "",
   image: null,
   quantity: 1,
-  price: 0,
-}
+  price: 0
+};
 
 const defaultOptions = {
   // common
-  name: 'diacart',
-  title: 'Корзина покупок',
-  totalPriceText: 'Итоговая сумма',
-  totalQuantityText: 'Количество',
-  removeFromCartBtnText: '',
-  emptyCartText: '<div class="diacart-empty"><h2 class="diacart-empty__title">Ваша корзина пуста</h2></div>',
-  orderBtnText: 'Оформить заказ',
+  name: "diacart",
+  title: "Корзина покупок",
+  totalPriceText: "Итоговая сумма",
+  totalQuantityText: "Количество",
+  removeFromCartBtnText: "",
+  emptyCartText:
+    '<div class="diacart-empty"><h2 class="diacart-empty__title">Ваша корзина пуста</h2></div>',
+  orderBtnText: "Оформить заказ",
 
-  currency: 'р.',
-  groupBy: 'id', // 'null', 'undefined' or false to not group
+  currency: "р.",
+  groupBy: "id", // 'null', 'undefined' or false to not group
   itemHasQuantity: true, // 'true' or 'false'
   itemHasPrice: true, // 'true' or 'false'
   itemCustomFields: [
-    // example: 
+    // example:
     // {
     //   type: 'text',
     //   key: 'size',
@@ -35,37 +36,38 @@ const defaultOptions = {
   ],
 
   // templates
-  wrapperTemplate: require('../templates/diacart-wrapper.art'), // template function
-  itemTemplate: require('../templates/diacart-item.art'), // template function
-  totalPriceTemplate: $data => parseFloat($data.totalPrice).toFixed(2) + ($data.currency || ''), // template function
+  wrapperTemplate: require("../templates/diacart-wrapper.art"), // template function
+  itemTemplate: require("../templates/diacart-item.art"), // template function
+  totalPriceTemplate: $data =>
+    parseFloat($data.totalPrice).toFixed(2) + ($data.currency || ""), // template function
   totalQuantityTemplate: $data => parseInt($data.totalQuantity), // template function
 
   // selectors
-  containerSelector: '[data-diacart-container]',
-  totalPriceContainerSelector: '[data-diacart-total-price-container]',
-  totalQuantityContainerSelector: '[data-diacart-total-quantity-container]',
+  containerSelector: "[data-diacart-container]",
+  totalPriceContainerSelector: "[data-diacart-total-price-container]",
+  totalQuantityContainerSelector: "[data-diacart-total-quantity-container]",
 
-  itemsContainerSelector: '[data-diacart-items-container]',
-  itemSelector: '[data-diacart-item]',
+  itemsContainerSelector: "[data-diacart-items-container]",
+  itemSelector: "[data-diacart-item]",
 
-  addToCartBtnSelector: '[data-diacart-add-to-cart]',
-  removeFromCartBtnSelector: '[data-diacart-remove-from-cart]',
-  quantityInputSelector: '[data-diacart-quantity-input]',
-  orderBtnSelector: '[data-diacart-order]',
+  addToCartBtnSelector: "[data-diacart-add-to-cart]",
+  removeFromCartBtnSelector: "[data-diacart-remove-from-cart]",
+  quantityInputSelector: "[data-diacart-quantity-input]",
+  orderBtnSelector: "[data-diacart-order]",
 
   // events
-  onInit: f=>f,
-  onAdd: f=>f,
-  onUpdate: f=>f,
-  onRemove: f=>f,
-  onClear: f=>f,
-  onOrder: f=>f,
-}
+  onInit: f => f,
+  onAdd: f => f,
+  onUpdate: f => f,
+  onRemove: f => f,
+  onClear: f => f,
+  onOrder: f => f
+};
 
 class Diacart {
   constructor(options) {
     this._options = {};
-    for(let key in defaultOptions) { 
+    for (let key in defaultOptions) {
       this._options[key] = options[key] || defaultOptions[key];
     }
     this.init();
@@ -74,12 +76,20 @@ class Diacart {
   init() {
     this._storage = new ObjectsLocalStorage(this._options.name, this.refresh);
 
-    this._containers = document.querySelectorAll(this._options.containerSelector);
+    this._containers = document.querySelectorAll(
+      this._options.containerSelector
+    );
     this.renderCart();
 
-    this._itemsContainer = document.querySelector(this._options.itemsContainerSelector);
-    this._totalPriceContainers = document.querySelectorAll(this._options.totalPriceContainerSelector);
-    this._totalQuantityContainers = document.querySelectorAll(this._options.totalQuantityContainerSelector);
+    this._itemsContainer = document.querySelector(
+      this._options.itemsContainerSelector
+    );
+    this._totalPriceContainers = document.querySelectorAll(
+      this._options.totalPriceContainerSelector
+    );
+    this._totalQuantityContainers = document.querySelectorAll(
+      this._options.totalQuantityContainerSelector
+    );
     this.renderCartItems();
     this.refreshTotalQuantity();
     this.refreshTotalPrice();
@@ -89,41 +99,66 @@ class Diacart {
   }
 
   _attachEventHandlers() {
-    addDelegatedEventListener(document, "click", this._options.orderBtnSelector, () => {
-      this.order();
-    });
-    addDelegatedEventListener(document, "click", this._options.addToCartBtnSelector, (e) => {
-      const json = e.target.getAttribute('data-diacart-item-json');
-      const item = JSON.parse(json);
-      this.add(item);
-    });
+    addDelegatedEventListener(
+      document,
+      "click",
+      this._options.orderBtnSelector,
+      () => {
+        this.order();
+      }
+    );
+    addDelegatedEventListener(
+      document,
+      "click",
+      this._options.addToCartBtnSelector,
+      e => {
+        const json = e.target.getAttribute("data-diacart-item-json");
+        const item = JSON.parse(json);
+        this.add(item);
+      }
+    );
     if (this._itemsContainer) {
-      addDelegatedEventListener(this._itemsContainer, "click", this._options.removeFromCartBtnSelector, (e) => {
-        if (e.target) {
-          const id = parseInt(e.target.getAttribute('data-diacart-item-id'));
-          this.remove(id);
+      addDelegatedEventListener(
+        this._itemsContainer,
+        "click",
+        this._options.removeFromCartBtnSelector,
+        e => {
+          if (e.target) {
+            const id = parseInt(e.target.getAttribute("data-diacart-item-id"));
+            this.remove(id);
+          }
         }
-      });
-      
-      const quantityInputHandler = (e) => {
+      );
+
+      const quantityInputHandler = e => {
         if (e.target) {
-          const id = parseInt(e.target.getAttribute('data-diacart-item-id'));
+          const id = parseInt(e.target.getAttribute("data-diacart-item-id"));
           if (e.target.value) {
             const intValue = parseInt(e.target.value);
             if (intValue > 0) {
               e.target.blur();
-              this.update(id, {quantity: intValue});
+              this.update(id, { quantity: intValue });
             }
           }
         }
       };
-      addDelegatedEventListener(this._itemsContainer, "change", this._options.quantityInputSelector, quantityInputHandler);
+      addDelegatedEventListener(
+        this._itemsContainer,
+        "change",
+        this._options.quantityInputSelector,
+        quantityInputHandler
+      );
 
       let timeout;
-      addDelegatedEventListener(this._itemsContainer, "keyup", this._options.quantityInputSelector, (e) => {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => quantityInputHandler(e), 300);
-      });
+      addDelegatedEventListener(
+        this._itemsContainer,
+        "keyup",
+        this._options.quantityInputSelector,
+        e => {
+          clearTimeout(timeout);
+          timeout = setTimeout(() => quantityInputHandler(e), 300);
+        }
+      );
     }
   }
 
@@ -137,7 +172,9 @@ class Diacart {
           let quantity = 0;
           for (let i = 0; i < groupItems.length; i++) {
             if (groupItems[i].obj) {
-              quantity += (groupItems[i].obj.quantity) ? parseInt(groupItems[i].obj.quantity) : 1;
+              quantity += groupItems[i].obj.quantity
+                ? parseInt(groupItems[i].obj.quantity)
+                : 1;
             }
           }
           mainItem.obj.quantity = quantity;
@@ -154,8 +191,11 @@ class Diacart {
   _calculateTotalQuantity() {
     let totalQuantity = 0;
     if (this._options.itemHasQuantity) {
-      this._storage.storage.forEach((item) => {
-        totalQuantity += (this._options.itemHasQuantity && item.obj.quantity) ? parseInt(item.obj.quantity) : 1;
+      this._storage.storage.forEach(item => {
+        totalQuantity +=
+          this._options.itemHasQuantity && item.obj.quantity
+            ? parseInt(item.obj.quantity)
+            : 1;
       });
     }
     return totalQuantity;
@@ -164,9 +204,13 @@ class Diacart {
   _calculateTotalPrice() {
     let totalPrice = 0;
     if (this._options.itemHasPrice) {
-      this._storage.storage.forEach((item) => {
-        const quantity = (this._options.itemHasQuantity && item.obj.quantity) ? parseInt(item.obj.quantity) : 1;
-        totalPrice += ((item.obj.price ? parseFloat(item.obj.price) : 0) * quantity);
+      this._storage.storage.forEach(item => {
+        const quantity =
+          this._options.itemHasQuantity && item.obj.quantity
+            ? parseInt(item.obj.quantity)
+            : 1;
+        totalPrice +=
+          (item.obj.price ? parseFloat(item.obj.price) : 0) * quantity;
       });
     }
     return totalPrice;
@@ -177,15 +221,17 @@ class Diacart {
       console.log("'item' argument is undefined!");
     }
     if (this._options.itemHasQuantity) {
-      item.quantity = (item.quantity && item.quantity > 0) ? item.quantity : 1;
-      if(this._options.groupBy) {
+      item.quantity = item.quantity && item.quantity > 0 ? item.quantity : 1;
+      if (this._options.groupBy) {
         const query = {
           [this._options.groupBy]: item[this._options.groupBy]
         };
 
         const storageItem = this._groupItemsByQuery(query);
         if (storageItem) {
-          this._storage.update(storageItem.id, {quantity: storageItem.obj.quantity + item.quantity});
+          this._storage.update(storageItem.id, {
+            quantity: storageItem.obj.quantity + item.quantity
+          });
         } else {
           this._storage.add(item);
         }
@@ -194,50 +240,49 @@ class Diacart {
     }
     this._storage.add(item);
     this._options.onAdd(item);
-  }
+  };
 
   update = (id, updateObj) => {
     this._storage.update(id, updateObj);
     this._options.onUpdate();
-  }
+  };
 
-  remove = (storageItemId) => {
+  remove = storageItemId => {
     if (!storageItemId) {
       new Error("'id' argument is required");
     }
     this._storage.removeById(storageItemId);
     this._options.onRemove(storageItemId);
-  }
+  };
 
   clear = () => {
     this._storage.clear();
     this._options.onClear();
-  }
+  };
 
   order = () => {
     this._options.onOrder();
-  }
+  };
 
   refresh = (prevStorage, nextStorage) => {
     this.refreshTotalPrice();
     this.refreshTotalQuantity();
     this.renderCartItems();
     // TODO: optimized cart items rerendering
-
-  }
+  };
 
   refreshTotalPrice = () => {
     this._totalPrice = this._calculateTotalPrice();
     this.renderTotalPrice();
-  }
+  };
 
   refreshTotalQuantity = () => {
     this._totalQuantity = this._calculateTotalQuantity();
     this.renderTotalQuantity();
-  }
+  };
 
-  _itemsTemplate = (data) => {
-    let compiledHTML = '';
+  _itemsTemplate = data => {
+    let compiledHTML = "";
     if (data.items && data.items.length) {
       data.items.forEach(item => {
         data.item = item;
@@ -247,7 +292,7 @@ class Diacart {
       compiledHTML += data.emptyCartText;
     }
     return compiledHTML;
-  }
+  };
 
   _renderTemplateToContainers(containers, template, data) {
     if (containers && containers.length) {
@@ -260,7 +305,10 @@ class Diacart {
     }
   }
 
-  renderCart(containers = this._containers, template = this._options.wrapperTemplate) {
+  renderCart(
+    containers = this._containers,
+    template = this._options.wrapperTemplate
+  ) {
     this._renderTemplateToContainers(containers, template, {
       title: this._options.title,
       totalPriceText: this._options.totalPriceText,
@@ -269,11 +317,14 @@ class Diacart {
       totalQuantity: this._totalQuantity,
       itemHasPrice: this._options.itemHasPrice,
       itemHasQuantity: this._options.itemHasQuantity,
-      orderBtnText: this._options.orderBtnText,
+      orderBtnText: this._options.orderBtnText
     });
   }
 
-  renderCartItems(container = this._itemsContainer, template = this._options.itemTemplate) {
+  renderCartItems(
+    container = this._itemsContainer,
+    template = this._options.itemTemplate
+  ) {
     this._renderTemplateToContainers([container], this._itemsTemplate, {
       itemTemplate: template,
       items: this._storage.storage,
@@ -282,20 +333,26 @@ class Diacart {
       itemHasQuantity: this._options.itemHasQuantity,
       itemCustomFields: this._options.itemCustomFields,
       emptyCartText: this._options.emptyCartText,
-      removeFromCartBtnText: this._options.removeFromCartBtnText,
+      removeFromCartBtnText: this._options.removeFromCartBtnText
     });
   }
 
-  renderTotalPrice(containers = this._totalPriceContainers, template = this._options.totalPriceTemplate) {
+  renderTotalPrice(
+    containers = this._totalPriceContainers,
+    template = this._options.totalPriceTemplate
+  ) {
     this._renderTemplateToContainers(containers, template, {
       totalPrice: this._totalPrice,
-      currency: this._options.currency,
+      currency: this._options.currency
     });
   }
 
-  renderTotalQuantity(containers = this._totalQuantityContainers, template = this._options.totalQuantityTemplate) {
+  renderTotalQuantity(
+    containers = this._totalQuantityContainers,
+    template = this._options.totalQuantityTemplate
+  ) {
     this._renderTemplateToContainers(containers, template, {
-      totalQuantity: this._totalQuantity,
+      totalQuantity: this._totalQuantity
     });
   }
 }

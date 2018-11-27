@@ -15,7 +15,8 @@
     "build": "npm run build:dev && npm run build:prod",
     "example": "webpack-dev-server --mode development --open --config webpack.example.config.js",
     "example:build": "webpack --mode production --config webpack.example.config.js",
-    "test": "mocha --require @babel/register"
+    "test": "mocha --require @babel/register",
+    "patch": "npm run build && git add . && git commit -m 'update lib build' && npm version patch && npm publish && git push -u origin master && git push -u origin master --tags"
   },
   "author": "Salahutdinov Salavat <salahutdinov.salavat@gmail.com> (https://github.com/Jackardios)",
   "repository": {

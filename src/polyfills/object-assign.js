@@ -1,12 +1,12 @@
 if (!Object.assign) {
-  Object.defineProperty(Object, 'assign', {
+  Object.defineProperty(Object, "assign", {
     enumerable: false,
     configurable: true,
     writable: true,
     value: function(target, firstSource) {
-      'use strict';
+      "use strict";
       if (target === undefined || target === null) {
-        throw new TypeError('Cannot convert first argument to object');
+        throw new TypeError("Cannot convert first argument to object");
       }
 
       var to = Object(target);
@@ -17,7 +17,11 @@ if (!Object.assign) {
         }
 
         var keysArray = Object.keys(Object(nextSource));
-        for (var nextIndex = 0, len = keysArray.length; nextIndex < len; nextIndex++) {
+        for (
+          var nextIndex = 0, len = keysArray.length;
+          nextIndex < len;
+          nextIndex++
+        ) {
           var nextKey = keysArray[nextIndex];
           var desc = Object.getOwnPropertyDescriptor(nextSource, nextKey);
           if (desc !== undefined && desc.enumerable) {
