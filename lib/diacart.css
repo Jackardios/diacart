@@ -2,20 +2,20 @@
   display: inline-block;
   vertical-align: middle; }
 
-.diacart-btn, .diacart-item__remove-btn, .diacart-counter__btn, .diacart, .diacart-item {
+.diacart, .diacart-btn, .diacart-item__remove-btn, .diacart-counter__btn, .diacart-item {
   -webkit-box-sizing: border-box;
      -moz-box-sizing: border-box;
           box-sizing: border-box; }
-  .diacart-btn *, .diacart-item__remove-btn *, .diacart-counter__btn *, .diacart *, .diacart-item *,
+  .diacart *, .diacart-btn *, .diacart-item__remove-btn *, .diacart-counter__btn *, .diacart-item *,
+  .diacart *::before,
   .diacart-btn *::before,
   .diacart-item__remove-btn *::before,
   .diacart-counter__btn *::before,
-  .diacart *::before,
   .diacart-item *::before,
+  .diacart *::after,
   .diacart-btn *::after,
   .diacart-item__remove-btn *::after,
   .diacart-counter__btn *::after,
-  .diacart *::after,
   .diacart-item *::after {
     -webkit-box-sizing: inherit;
        -moz-box-sizing: inherit;
@@ -102,6 +102,28 @@
 .diacart {
   font-size: 16px; }
 
+.diacart {
+  padding: 30px 15px;
+  font-family: "Verdana", sans-serif;
+  color: #1d1d1d;
+  min-width: 250px; }
+  .diacart__header {
+    border-bottom: 1px solid #ededee;
+    padding: 0 0 15px 0; }
+  .diacart__title {
+    font-weight: bold; }
+  .diacart__footer {
+    text-align: right;
+    border-top: 1px solid #ededee;
+    padding: 15px -12px 0 0 0; }
+    .diacart__footer-container {
+      margin: 0 -12px; }
+  .diacart__total-price, .diacart__order-btn {
+    margin: 12px 12px 0; }
+  .diacart__total-price [data-diacart-total-price-container] {
+    font-family: "Verdana", sans-serif;
+    font-weight: bold; }
+
 .diacart-btn, .diacart-item__remove-btn, .diacart-counter__btn {
   cursor: pointer;
   position: relative;
@@ -141,28 +163,6 @@
     background-color: #f44336; }
     .diacart-btn--error:hover {
       background-color: #f22314; }
-
-.diacart {
-  padding: 30px 15px;
-  font-family: "Verdana", sans-serif;
-  color: #1d1d1d;
-  min-width: 250px; }
-  .diacart__header {
-    border-bottom: 1px solid #ededee;
-    padding: 0 0 15px 0; }
-  .diacart__title {
-    font-weight: bold; }
-  .diacart__footer {
-    text-align: right;
-    border-top: 1px solid #ededee;
-    padding: 15px -12px 0 0 0; }
-    .diacart__footer-container {
-      margin: 0 -12px; }
-  .diacart__total-price, .diacart__order-btn {
-    margin: 12px 12px 0; }
-  .diacart__total-price [data-diacart-total-price-container] {
-    font-family: "Verdana", sans-serif;
-    font-weight: bold; }
 
 .diacart-item {
   position: relative;
@@ -231,10 +231,15 @@
     margin: 0;
     font-weight: normal;
     color: #9c9c9c; }
-  @media (min-width: 576px) {
+
+.diacart-hidden {
+  display: none; }
+
+@media (min-width: 576px) {
       .diacart-item__image {
         width: 100%; } }
-  @media (min-width: 768px) {
+
+@media (min-width: 768px) {
     .diacart__title {
       font-size: 28px; }
     .diacart__total-price [data-diacart-total-price-container], .diacart-item__price {
