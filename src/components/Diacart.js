@@ -99,35 +99,42 @@ class Diacart {
   }
 
   _attachEventHandlers() {
+    const self = this;
     addDelegatedEventListener(
       document,
       "click",
       this._options.orderBtnSelector,
-      () => {
+      e => {
+        e.preventDefault();
         this.order();
-      }
+      },
+      true
     );
     addDelegatedEventListener(
       document,
       "click",
       this._options.addToCartBtnSelector,
-      e => {
-        const json = e.currentTarget.getAttribute("data-diacart-item-json");
+      function(e) {
+        e.preventDefault();
+        const json = this.getAttribute("data-diacart-item-json");
         const item = JSON.parse(json);
-        this.add(item);
-      }
+        self.add(item);
+      },
+      true
     );
     if (this._itemsContainer) {
       addDelegatedEventListener(
         this._itemsContainer,
         "click",
         this._options.removeFromCartBtnSelector,
-        e => {
-          if (e.target) {
-            const id = parseInt(e.target.getAttribute("data-diacart-item-id"));
-            this.remove(id);
+        function(e) {
+          e.preventDefault();
+          if (this) {
+            const id = parseInt(this.getAttribute("data-diacart-item-id"));
+            self.remove(id);
           }
-        }
+        },
+        true
       );
 
       const quantityInputHandler = e => {
