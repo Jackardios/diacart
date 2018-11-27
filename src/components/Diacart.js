@@ -219,27 +219,28 @@ class Diacart {
   add = (item = {}) => {
     if (!item && console && console.log) {
       console.log("'item' argument is undefined!");
-    }
-    if (this._options.itemHasQuantity) {
-      item.quantity = item.quantity && item.quantity > 0 ? item.quantity : 1;
-      if (this._options.groupBy) {
-        const query = {
-          [this._options.groupBy]: item[this._options.groupBy]
-        };
+    } else {
+      if (this._options.itemHasQuantity) {
+        item.quantity = item.quantity && item.quantity > 0 ? item.quantity : 1;
+        if (this._options.groupBy) {
+          const query = {
+            [this._options.groupBy]: item[this._options.groupBy]
+          };
 
-        const storageItem = this._groupItemsByQuery(query);
-        if (storageItem) {
-          this._storage.update(storageItem.id, {
-            quantity: storageItem.obj.quantity + item.quantity
-          });
-        } else {
-          this._storage.add(item);
+          const storageItem = this._groupItemsByQuery(query);
+          if (storageItem) {
+            this._storage.update(storageItem.id, {
+              quantity: storageItem.obj.quantity + item.quantity
+            });
+          } else {
+            this._storage.add(item);
+          }
+          return;
         }
-        return;
       }
+      this._storage.add(item);
+      this._options.onAdd(item);
     }
-    this._storage.add(item);
-    this._options.onAdd(item);
   };
 
   update = (id, updateObj) => {
