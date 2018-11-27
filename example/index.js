@@ -2,6 +2,7 @@ import "./common.scss";
 import Diacart from "../src/index";
 
 window.diacart = new Diacart({
+  itemHasQuantity: false,
   onInit: f => console.log("init"),
   onAdd: f => console.log("add"),
   onUpdate: f => console.log("update"),

@@ -168,7 +168,7 @@ class Diacart {
 
   _groupItemsByQuery(query = {}) {
     if (query) {
-      const groupItems = this._storage.findByQuery(query);
+      const groupItems = this._storage.filterByQuery(query);
       if (groupItems.length) {
         const mainItem = groupItems[0];
 
@@ -194,14 +194,12 @@ class Diacart {
 
   _calculateTotalQuantity() {
     let totalQuantity = 0;
-    if (this._options.itemHasQuantity) {
-      this._storage.storage.forEach(item => {
-        totalQuantity +=
-          this._options.itemHasQuantity && item.obj.quantity
-            ? parseInt(item.obj.quantity)
-            : 1;
-      });
-    }
+    this._storage.storage.forEach(item => {
+      totalQuantity +=
+        this._options.itemHasQuantity && item.obj.quantity
+          ? parseInt(item.obj.quantity)
+          : 1;
+    });
     return totalQuantity;
   }
 
@@ -220,28 +218,33 @@ class Diacart {
     return totalPrice;
   }
 
+  hasItem(query) {
+    return !!this._storage.findByQuery(query);
+  }
+
   add = (item = {}) => {
     if (!item && console && console.log) {
       console.log("'item' argument is undefined!");
     } else {
-      if (this._options.itemHasQuantity) {
-        item.quantity = item.quantity && item.quantity > 0 ? item.quantity : 1;
-        if (this._options.groupBy) {
-          const query = {
-            [this._options.groupBy]: item[this._options.groupBy]
-          };
+      item.quantity =
+        this._options.itemHasQuantity && item.quantity && item.quantity > 0
+          ? item.quantity
+          : 1;
+      if (this._options.groupBy) {
+        const query = {
+          [this._options.groupBy]: item[this._options.groupBy]
+        };
 
-          const storageItem = this._groupItemsByQuery(query);
-          if (storageItem) {
-            this._storage.update(storageItem.id, {
-              quantity: storageItem.obj.quantity + item.quantity
-            });
-          } else {
-            this._storage.add(item);
-          }
-          this._options.onAdd(item);
-          return;
+        const storageItem = this._groupItemsByQuery(query);
+        if (storageItem) {
+          this._storage.update(storageItem.id, {
+            quantity: storageItem.obj.quantity + item.quantity
+          });
+        } else {
+          this._storage.add(item);
         }
+        this._options.onAdd(item);
+        return;
       }
       this._storage.add(item);
       this._options.onAdd(item);
