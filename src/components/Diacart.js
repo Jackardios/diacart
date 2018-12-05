@@ -22,8 +22,7 @@ const defaultOptions = {
   totalPriceText: "Итоговая сумма",
   totalQuantityText: "Количество",
   removeFromCartBtnText: "",
-  emptyCartText:
-    '<div class="diacart-empty"><h2 class="diacart-empty__title">Ваша корзина пуста</h2></div>',
+  emptyCartText: '<div class="diacart-empty"><h2 class="diacart-empty__title">Ваша корзина пуста</h2></div>',
   orderBtnText: "Оформить заказ",
 
   currency: "р.",
@@ -67,7 +66,8 @@ const defaultOptions = {
   onUpdate: f => f,
   onRemove: f => f,
   onClear: f => f,
-  onOrder: f => f
+  onOrder: f => f,
+  onRefresh: f => f,
 };
 
 class Diacart {
@@ -122,7 +122,7 @@ class Diacart {
       document,
       "click",
       this._options.addToCartBtnSelector,
-      function(e) {
+      function (e) {
         e.preventDefault();
         const json = this.getAttribute("data-diacart-item-json");
         const item = JSON.parse(json);
@@ -135,7 +135,7 @@ class Diacart {
         this._itemsContainer,
         "click",
         this._options.removeFromCartBtnSelector,
-        function(e) {
+        function (e) {
           e.preventDefault();
           if (this) {
             const id = parseInt(this.getAttribute("data-diacart-item-id"));
@@ -152,7 +152,9 @@ class Diacart {
             const intValue = parseInt(e.target.value);
             if (intValue > 0) {
               e.target.blur();
-              this.update(id, { quantity: intValue });
+              this.update(id, {
+                quantity: intValue
+              });
             }
           }
         }
@@ -187,9 +189,9 @@ class Diacart {
           let quantity = 0;
           for (let i = 0; i < groupItems.length; i++) {
             if (groupItems[i].obj) {
-              quantity += groupItems[i].obj.quantity
-                ? parseInt(groupItems[i].obj.quantity)
-                : 1;
+              quantity += groupItems[i].obj.quantity ?
+                parseInt(groupItems[i].obj.quantity) :
+                1;
             }
           }
           mainItem.obj.quantity = quantity;
@@ -207,9 +209,9 @@ class Diacart {
     let totalQuantity = 0;
     this._storage.storage.forEach(item => {
       totalQuantity +=
-        this._options.itemHasQuantity && item.obj.quantity
-          ? parseInt(item.obj.quantity)
-          : 1;
+        this._options.itemHasQuantity && item.obj.quantity ?
+        parseInt(item.obj.quantity) :
+        1;
     });
     return totalQuantity;
   }
@@ -219,9 +221,9 @@ class Diacart {
     if (this._options.itemHasPrice) {
       this._storage.storage.forEach(item => {
         const quantity =
-          this._options.itemHasQuantity && item.obj.quantity
-            ? parseInt(item.obj.quantity)
-            : 1;
+          this._options.itemHasQuantity && item.obj.quantity ?
+          parseInt(item.obj.quantity) :
+          1;
         totalPrice +=
           (item.obj.price ? parseFloat(item.obj.price) : 0) * quantity;
       });
@@ -238,9 +240,9 @@ class Diacart {
       console.log("'item' argument is undefined!");
     } else {
       item.quantity =
-        this._options.itemHasQuantity && item.quantity && item.quantity > 0
-          ? item.quantity
-          : 1;
+        this._options.itemHasQuantity && item.quantity && item.quantity > 0 ?
+        item.quantity :
+        1;
       if (this._options.groupBy) {
         const query = {
           [this._options.groupBy]: item[this._options.groupBy]
@@ -289,6 +291,8 @@ class Diacart {
     this.refreshTotalQuantity();
     this.renderCartItems();
     this.updateHiddenIfEmpty();
+
+    this._options.onRefresh(prevStorage, nextStorage);
 
     // TODO: optimized cart items rerendering
   };
