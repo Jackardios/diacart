@@ -130,21 +130,22 @@ class Diacart {
       },
       true
     );
-    if (this._itemsContainer) {
-      addDelegatedEventListener(
-        this._itemsContainer,
-        "click",
-        this._options.removeFromCartBtnSelector,
-        function (e) {
-          e.preventDefault();
-          if (this) {
-            const id = parseInt(this.getAttribute("data-diacart-item-id"));
-            self.remove(id);
-          }
-        },
-        true
-      );
 
+    addDelegatedEventListener(
+      document,
+      "click",
+      this._options.removeFromCartBtnSelector,
+      function (e) {
+        e.preventDefault();
+        if (this) {
+          const id = parseInt(this.getAttribute("data-diacart-item-id"));
+          self.remove(id);
+        }
+      },
+      true
+    );
+
+    if (this._itemsContainer) {
       const quantityInputHandler = e => {
         if (e.target) {
           const id = parseInt(e.target.getAttribute("data-diacart-item-id"));
@@ -159,6 +160,7 @@ class Diacart {
           }
         }
       };
+
       addDelegatedEventListener(
         this._itemsContainer,
         "change",
