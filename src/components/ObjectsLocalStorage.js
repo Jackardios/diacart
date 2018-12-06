@@ -61,24 +61,20 @@ class ObjectsLocalStorage {
    * Найти объект со свойствами, соответствующими свойствам запроса.
    *
    * @param {Object} query - Query to match
-   * @return {Object[]} Array of found objects
+   * @return {Object} Found object or 'null' if it was not found
    *
    * @example
    * storage.findByQuery({foo: 'bar' baz: 200})
    */
   findByQuery(query) {
-    if (query) {
-      return this.storage.find(storageItem => {
-        for (let key in query) {
-          if (query[key] !== storageItem["obj"][key]) {
-            return false;
-          }
+    return query ? this.storage.find(storageItem => {
+      for (let key in query) {
+        if (query[key] !== storageItem["obj"][key]) {
+          return false;
         }
-        return true;
-      });
-    }
-
-    return [];
+      }
+      return true;
+    }) : null;
   }
 
   /**
@@ -89,9 +85,9 @@ class ObjectsLocalStorage {
    * @return {Object} Found object or 'null' if it was not found
    */
   findById(id) {
-    return this.storage.find(storageItem => {
+    return id ? this.storage.find(storageItem => {
       return storageItem["id"] === id;
-    })["obj"];
+    }) : null;
   }
 
   /**
