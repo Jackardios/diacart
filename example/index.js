@@ -8,5 +8,6 @@ window.diacart = new Diacart({
   onUpdate: f => console.log("update"),
   onRemove: f => console.log("remove"),
   onClear: f => console.log("clear"),
-  onOrder: f => console.log("order")
+  onOrder: f => console.log("order"),
+  onRefresh: f => console.log("refresh")
 });
