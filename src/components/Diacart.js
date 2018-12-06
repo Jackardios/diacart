@@ -252,9 +252,10 @@ class Diacart {
 
         const storageItem = this._groupItemsByQuery(query);
         if (storageItem) {
-          this._storage.update(storageItem.id, {
+          const updateObject = Object.assign({}, item, {
             quantity: storageItem.obj.quantity + item.quantity
           });
+          this._storage.update(storageItem.id, updateObject);
         } else {
           this._storage.add(item);
         }
