@@ -184,8 +184,7 @@
   .diacart-item__text-col {
     padding-right: 65px;
     width: 100%;
-    min-width: 300px;
-    max-height: 300px; }
+    min-width: 300px; }
   .diacart-item__title {
     display: block;
     margin: 15px 0;
