@@ -1,7 +1,7 @@
-import ObjectsLocalStorage from "../src/components/ObjectsLocalStorage";
+import ObjectsStorage from "../src/components/ObjectsStorage";
 
-// ObjectsLocalStorage tests
-const storage = new ObjectsLocalStorage("diacart");
+// ObjectsStorage tests
+const storage = new ObjectsStorage("diacart");
 
 // add()
 storage.clear();
@@ -26,16 +26,16 @@ storage.add({
   unitPrice: 3500
 });
 
+window.storage = storage;
+
 console.log(storage.storage);
 
 // findById()
-console.log("findById: ", storage.findById(3));
 
 // findByQuery()
-console.log("findByQuery: ", storage.findByQuery({ name: "Jacket", id: 15 }));
-
+console.log("findByQuery: ", storage.filter({ name: "Jacket", id: 15 }));
 // removeById()
-console.log("removeById: ", storage.removeById(3));
+console.log("remove: ", storage.remove(3));
 console.log(storage.storage);
 
 // removeByQuery()

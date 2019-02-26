@@ -1,128 +1,226 @@
-import ObjectsLocalStorage from "./ObjectsLocalStorage";
-import {
-  addDelegatedEventListener,
-  addClass,
-  removeClass
-} from "../utils/helpers";
-import diacartCounterInit from "../components/diacartCounterInit";
+import { html, render } from "lit-html";
+import EventEmitter from "eventemitter3";
+import template from "../templates/diacart";
+import itemTemplate from "../templates/diacart-item";
+import miniTemplate from "../templates/diacart-mini";
 
-const defaultItem = {
-  id: null,
-  link: null,
-  name: "",
-  image: null,
-  quantity: 1,
-  price: 0
-};
+import ObjectsStorage from "./ObjectsStorage";
+import {
+  addDelegatedEventListener
+  // addClass,
+  // removeClass
+} from "../utils/helpers";
 
 const defaultOptions = {
-  // common
   name: "diacart",
   title: "Корзина покупок",
   totalPriceText: "Итоговая сумма",
   totalQuantityText: "Количество",
   removeFromCartBtnText: "",
-  emptyCartText: '<div class="diacart-empty"><h2 class="diacart-empty__title">Ваша корзина пуста</h2></div>',
+  emptyCartText: "Ваша корзина пуста",
   orderBtnText: "Оформить заказ",
 
   currency: "р.",
   groupBy: "id", // 'null', 'undefined' or false to not group
+
   itemHasQuantity: true, // 'true' or 'false'
   itemHasPrice: true, // 'true' or 'false'
-  itemCustomFields: [
-    // example:
-    // {
-    //   type: 'text',
-    //   key: 'size',
-    //   label: 'Размер', // by default label === key
-    // }
-  ],
-  hiddenClass: "diacart-hidden",
-
-  // templates
-  wrapperTemplate: require("../templates/diacart-wrapper.art"), // template function
-  itemTemplate: require("../templates/diacart-item.art"), // template function
-  totalPriceTemplate: $data =>
-    parseFloat($data.totalPrice).toFixed(2) + ($data.currency || ""), // template function
-  totalQuantityTemplate: $data => parseInt($data.totalQuantity), // template function
 
   // selectors
   containerSelector: "[data-diacart-container]",
+  miniContainerSelector: "[data-diacart-mini-container]",
   totalPriceContainerSelector: "[data-diacart-total-price-container]",
   totalQuantityContainerSelector: "[data-diacart-total-quantity-container]",
-
-  itemsContainerSelector: "[data-diacart-items-container]",
-  itemSelector: "[data-diacart-item]",
-  hiddenIfEmptySelector: "[data-diacart-hidden-if-empty]",
 
   addToCartBtnSelector: "[data-diacart-add-to-cart]",
   removeFromCartBtnSelector: "[data-diacart-remove-from-cart]",
   quantityInputSelector: "[data-diacart-quantity-input]",
   orderBtnSelector: "[data-diacart-order]",
 
-  // events
-  onInit: f => f,
-  onAdd: f => f,
-  onUpdate: f => f,
-  onRemove: f => f,
-  onClear: f => f,
-  onOrder: f => f,
-  onRefresh: f => f,
+  // templates
+  template: template,
+  itemTemplate: itemTemplate,
+  miniTemplate: miniTemplate,
+  totalPriceTemplate: ({ options, totalPrice }) =>
+    parseFloat(totalPrice).toFixed(2) + (options.currency || ""),
+  totalQuantityTemplate: ({ totalQuantity }) => parseInt(totalQuantity)
 };
 
-class Diacart {
-  constructor(options) {
-    this._options = Object.assign({}, defaultOptions, options);
+export default class Diacart {
+  constructor(options = {}) {
+    this.options = Object.assign({}, defaultOptions, options);
     this.init();
   }
 
   init() {
-    this._storage = new ObjectsLocalStorage(this._options.name, this.refresh);
+    this.eventEmitter = new EventEmitter();
+    this.storage = new ObjectsStorage(this.options.name);
+    this.storage.eventEmitter.on("update", this.render);
 
     this._containers = document.querySelectorAll(
-      this._options.containerSelector
+      this.options.containerSelector
     );
-    this.renderCart();
 
-    this._itemsContainer = document.querySelector(
-      this._options.itemsContainerSelector
+    this._miniContainers = document.querySelectorAll(
+      this.options.miniContainerSelector
     );
+
     this._totalPriceContainers = document.querySelectorAll(
-      this._options.totalPriceContainerSelector
-    );
-    this._totalQuantityContainers = document.querySelectorAll(
-      this._options.totalQuantityContainerSelector
-    );
-    this._hiddenIfEmpty = document.querySelectorAll(
-      this._options.hiddenIfEmptySelector
+      this.options.totalPriceContainerSelector
     );
 
-    this.renderCartItems();
-    this.refreshTotalQuantity();
-    this.refreshTotalPrice();
-    this.updateHiddenIfEmpty();
+    this._totalQuantityContainers = document.querySelectorAll(
+      this.options.totalQuantityContainerSelector
+    );
+
+    this.render();
     this._attachEventHandlers();
-    this._options.onInit(this);
-    diacartCounterInit(this._itemsContainer);
   }
 
+  on() {
+    return this.eventEmitter.on(eventName, emitted, context);
+  }
+
+  once() {
+    return this.eventEmitter.once(eventName, emitted, context);
+  }
+
+  removeListener() {
+    return this.eventEmitter.removeListener(eventName, emitted, context);
+  }
+
+  get totalPrice() {
+    return this._calculateTotalPrice();
+  }
+
+  get totalQuantity() {
+    return this._calculateTotalQuantity();
+  }
+
+  add = (item = {}) => {
+    if (!item && console && console.warn) {
+      console.warn(`'item' argument is ${item}!`);
+      return false;
+    }
+    let added = false;
+
+    item.quantity =
+      this.options.itemHasQuantity && item.quantity && item.quantity > 0
+        ? item.quantity
+        : 1;
+    if (this.options.groupBy) {
+      const query = {
+        [this.options.groupBy]: item[this.options.groupBy]
+      };
+      const id = this._groupItemsByQuery(query);
+      if (id) {
+        const storageItem = this.storage.get(id);
+        const updateObject = Object.assign({}, item, {
+          quantity: storageItem.quantity + item.quantity
+        });
+        added = this.storage.update(id, updateObject);
+      } else {
+        added = this.storage.add(item);
+      }
+      this.eventEmitter.emit("add");
+      return added;
+    }
+    added = this.storage.add(item);
+    this.eventEmitter.emit("add");
+    return added;
+  };
+
+  remove = id => {
+    if (!id && console && console.warn) {
+      console.warn(`'id' argument is required!`);
+      return false;
+    }
+    let added = this.storage.remove(id);
+    this.eventEmitter.emit("remove");
+
+    return added;
+  };
+
+  update = (id, updateObj) => {
+    let updated = this.storage.update(id, updateObj);
+    this.eventEmitter.emit("update");
+
+    return updated;
+  };
+
+  clear = () => {
+    this.storage.clear();
+    this.eventEmitter.emit("clear");
+  };
+
+  order = () => {
+    this.eventEmitter.emit("order");
+  };
+
+  render = () => {
+    if (this._containers.length) {
+      const containerCompiled = this.options.template(this);
+      for (let i = 0; i < this._containers.length; ++i) {
+        render(containerCompiled, this._containers[i]);
+      }
+    }
+
+    if (this._miniContainers.length) {
+      const miniContainerCompiled = this.options.miniTemplate(this);
+      for (let i = 0; i < this._miniContainers.length; ++i) {
+        render(miniContainerCompiled, this._miniContainers[i]);
+      }
+    }
+
+    if (this._totalPriceContainers.length) {
+      const totalPriceCompiled = this.options.totalPriceTemplate(this);
+      for (let i = 0; i < this._totalPriceContainers.length; ++i) {
+        render(
+          html`
+            ${totalPriceCompiled}
+          `,
+          this._totalPriceContainers[i]
+        );
+      }
+    }
+
+    if (this._totalQuantityContainers.length) {
+      const totalQuantityCompiled = this.options.totalQuantityTemplate(this);
+      for (let i = 0; i < this._totalQuantityContainers.length; ++i) {
+        render(
+          html`
+            ${totalQuantityCompiled}
+          `,
+          this._totalQuantityContainers[i]
+        );
+      }
+    }
+  };
+
+  // helpers
+  hasItem(query) {
+    return !!this.storage.findByQuery(query);
+  }
+
+  // private
   _attachEventHandlers() {
     const self = this;
     addDelegatedEventListener(
       document,
       "click",
-      this._options.orderBtnSelector,
+      this.options.orderBtnSelector,
       e => {
         e.preventDefault();
         this.order();
       },
       true
     );
+
     addDelegatedEventListener(
       document,
       "click",
-      this._options.addToCartBtnSelector,
-      function (e) {
+      this.options.addToCartBtnSelector,
+      function(e) {
         e.preventDefault();
         const json = this.getAttribute("data-diacart-item-json");
         const item = JSON.parse(json);
@@ -134,8 +232,8 @@ class Diacart {
     addDelegatedEventListener(
       document,
       "click",
-      this._options.removeFromCartBtnSelector,
-      function (e) {
+      this.options.removeFromCartBtnSelector,
+      function(e) {
         e.preventDefault();
         if (this) {
           const id = parseInt(this.getAttribute("data-diacart-item-id"));
@@ -145,257 +243,92 @@ class Diacart {
       true
     );
 
-    if (this._itemsContainer) {
+    if (this._containers[0]) {
       const quantityInputHandler = e => {
         if (e.target) {
           const id = parseInt(e.target.getAttribute("data-diacart-item-id"));
           if (e.target.value) {
-            const intValue = parseInt(e.target.value);
-            if (intValue > 0) {
-              e.target.blur();
-              this.update(id, {
-                quantity: intValue
-              });
+            let intValue = parseInt(e.target.value);
+            if (intValue < 1) {
+              intValue = 1;
             }
+
+            e.target.value = intValue;
+
+            this.update(id, {
+              quantity: intValue
+            });
           }
         }
       };
 
       addDelegatedEventListener(
-        this._itemsContainer,
+        this._containers[0],
         "change",
-        this._options.quantityInputSelector,
+        this.options.quantityInputSelector,
         quantityInputHandler
       );
 
       let timeout;
       addDelegatedEventListener(
-        this._itemsContainer,
+        this._containers[0],
         "keyup",
-        this._options.quantityInputSelector,
+        this.options.quantityInputSelector,
         e => {
           clearTimeout(timeout);
-          timeout = setTimeout(() => quantityInputHandler(e), 300);
+          timeout = setTimeout(() => quantityInputHandler(e), 100);
         }
       );
     }
   }
 
-  _groupItemsByQuery(query = {}) {
-    if (query) {
-      const groupItems = this._storage.filterByQuery(query);
-      if (groupItems.length) {
-        const mainItem = groupItems[0];
-
-        if (groupItems.length > 1) {
-          let quantity = 0;
-          for (let i = 0; i < groupItems.length; i++) {
-            if (groupItems[i].obj) {
-              quantity += groupItems[i].obj.quantity ?
-                parseInt(groupItems[i].obj.quantity) :
-                1;
-            }
-          }
-          mainItem.obj.quantity = quantity;
-          this._storage.removeByQuery(query);
-          this._storage.add(mainItem.obj);
-        }
-
-        return mainItem;
-      }
-    }
-    return null;
-  }
-
-  _calculateTotalQuantity() {
-    let totalQuantity = 0;
-    this._storage.storage.forEach(item => {
-      totalQuantity +=
-        this._options.itemHasQuantity && item.obj.quantity ?
-        parseInt(item.obj.quantity) :
-        1;
-    });
-    return totalQuantity;
-  }
-
   _calculateTotalPrice() {
     let totalPrice = 0;
-    if (this._options.itemHasPrice) {
-      this._storage.storage.forEach(item => {
+    if (this.options.itemHasPrice) {
+      this.storage.forEach(item => {
         const quantity =
-          this._options.itemHasQuantity && item.obj.quantity ?
-          parseInt(item.obj.quantity) :
-          1;
-        totalPrice +=
-          (item.obj.price ? parseFloat(item.obj.price) : 0) * quantity;
+          this.options.itemHasQuantity && item.quantity
+            ? parseInt(item.quantity)
+            : 1;
+        totalPrice += (item.price ? parseFloat(item.price) : 0) * quantity;
       });
     }
     return totalPrice;
   }
 
-  hasItem(query) {
-    return !!this._storage.findByQuery(query);
+  _calculateTotalQuantity() {
+    let totalQuantity = 0;
+    this.storage.forEach(item => {
+      totalQuantity +=
+        this.options.itemHasQuantity && item.quantity
+          ? parseInt(item.quantity)
+          : 1;
+    });
+    return totalQuantity;
   }
 
-  add = (item = {}) => {
-    if (!item && console && console.log) {
-      console.log("'item' argument is undefined!");
-    } else {
-      item.quantity =
-        this._options.itemHasQuantity && item.quantity && item.quantity > 0 ?
-        item.quantity :
-        1;
-      if (this._options.groupBy) {
-        const query = {
-          [this._options.groupBy]: item[this._options.groupBy]
-        };
+  _groupItemsByQuery(query = {}) {
+    if (query) {
+      const groupItems = this.storage.filter(query);
+      const groupItemsKeys = Object.keys(groupItems);
 
-        const storageItem = this._groupItemsByQuery(query);
-        if (storageItem) {
-          const updateObject = Object.assign({}, item, {
-            quantity: storageItem.obj.quantity + item.quantity
+      if (groupItemsKeys.length) {
+        const mainItem = groupItems[groupItemsKeys[0]];
+
+        if (groupItemsKeys.length > 1) {
+          let quantity = 0;
+          groupItemsKeys.forEach(key => {
+            quantity += groupItems[key].quantity
+              ? parseInt(groupItems[key].quantity)
+              : 1;
           });
-          this._storage.update(storageItem.id, updateObject);
-        } else {
-          this._storage.add(item);
+          mainItem.quantity = quantity;
+          this.storage.removeByQuery(query);
+          this.storage.add(mainItem);
         }
-        this._options.onAdd(item);
-        return;
-      }
-      this._storage.add(item);
-      this._options.onAdd(item);
-    }
-  };
-
-  update = (id, updateObj) => {
-    this._storage.update(id, updateObj);
-    this._options.onUpdate();
-  };
-
-  remove = storageItemId => {
-    if (!storageItemId) {
-      new Error("'id' argument is required");
-    }
-    this._storage.removeById(storageItemId);
-    this._options.onRemove(storageItemId);
-  };
-
-  clear = () => {
-    this._storage.clear();
-    this._options.onClear();
-  };
-
-  order = () => {
-    this._options.onOrder(this._storage.storage);
-  };
-
-  refresh = (prevStorage, nextStorage) => {
-    this.refreshTotalPrice();
-    this.refreshTotalQuantity();
-    this.renderCartItems();
-    this.updateHiddenIfEmpty();
-
-    this._options.onRefresh(prevStorage, nextStorage);
-
-    // TODO: optimized cart items rerendering
-  };
-
-  updateHiddenIfEmpty = () => {
-    if (this._storage.storage.length) {
-      for (let i = 0; i < this._hiddenIfEmpty.length; ++i) {
-        removeClass(this._hiddenIfEmpty[i], this._options.hiddenClass);
-      }
-    } else {
-      for (let i = 0; i < this._hiddenIfEmpty.length; ++i) {
-        addClass(this._hiddenIfEmpty[i], this._options.hiddenClass);
+        return groupItemsKeys[0];
       }
     }
-  };
-
-  refreshTotalPrice = () => {
-    this._totalPrice = this._calculateTotalPrice();
-    this.renderTotalPrice();
-  };
-
-  refreshTotalQuantity = () => {
-    this._totalQuantity = this._calculateTotalQuantity();
-    this.renderTotalQuantity();
-  };
-
-  _itemsTemplate = data => {
-    let compiledHTML = "";
-    if (data.items && data.items.length) {
-      data.items.forEach(item => {
-        data.item = item;
-        compiledHTML += data.itemTemplate(data);
-      });
-    } else {
-      compiledHTML += data.emptyCartText;
-    }
-    return compiledHTML;
-  };
-
-  _renderTemplateToContainers(containers, template, data) {
-    if (containers && containers.length) {
-      const compiledHTML = template(data);
-      for (let i = 0; i < containers.length; ++i) {
-        if (containers[i]) {
-          containers[i].innerHTML = compiledHTML;
-        }
-      }
-    }
-  }
-
-  renderCart(
-    containers = this._containers,
-    template = this._options.wrapperTemplate
-  ) {
-    this._renderTemplateToContainers(containers, template, {
-      title: this._options.title,
-      totalPriceText: this._options.totalPriceText,
-      totalQuantityText: this._options.totalQuantityText,
-      totalPrice: this._totalPrice,
-      totalQuantity: this._totalQuantity,
-      itemHasPrice: this._options.itemHasPrice,
-      itemHasQuantity: this._options.itemHasQuantity,
-      orderBtnText: this._options.orderBtnText
-    });
-  }
-
-  renderCartItems(
-    container = this._itemsContainer,
-    template = this._options.itemTemplate
-  ) {
-    this._renderTemplateToContainers([container], this._itemsTemplate, {
-      itemTemplate: template,
-      items: this._storage.storage,
-      currency: this._options.currency,
-      itemHasPrice: this._options.itemHasPrice,
-      itemHasQuantity: this._options.itemHasQuantity,
-      itemCustomFields: this._options.itemCustomFields,
-      emptyCartText: this._options.emptyCartText,
-      removeFromCartBtnText: this._options.removeFromCartBtnText
-    });
-  }
-
-  renderTotalPrice(
-    containers = this._totalPriceContainers,
-    template = this._options.totalPriceTemplate
-  ) {
-    this._renderTemplateToContainers(containers, template, {
-      totalPrice: this._totalPrice,
-      currency: this._options.currency
-    });
-  }
-
-  renderTotalQuantity(
-    containers = this._totalQuantityContainers,
-    template = this._options.totalQuantityTemplate
-  ) {
-    this._renderTemplateToContainers(containers, template, {
-      totalQuantity: this._totalQuantity
-    });
+    return null;
   }
 }
-
-export default Diacart;

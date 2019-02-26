@@ -67,14 +67,16 @@ class ObjectsLocalStorage {
    * storage.findByQuery({foo: 'bar' baz: 200})
    */
   findByQuery(query) {
-    return query ? this.storage.find(storageItem => {
-      for (let key in query) {
-        if (query[key] !== storageItem["obj"][key]) {
-          return false;
-        }
-      }
-      return true;
-    }) : null;
+    return query
+      ? this.storage.find(storageItem => {
+          for (let key in query) {
+            if (query[key] !== storageItem["obj"][key]) {
+              return false;
+            }
+          }
+          return true;
+        })
+      : null;
   }
 
   /**
@@ -85,9 +87,11 @@ class ObjectsLocalStorage {
    * @return {Object} Found object or 'null' if it was not found
    */
   findById(id) {
-    return id ? this.storage.find(storageItem => {
-      return storageItem["id"] === id;
-    }) : null;
+    return id
+      ? this.storage.find(storageItem => {
+          return storageItem["id"] === id;
+        })
+      : null;
   }
 
   /**
