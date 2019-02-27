@@ -1,7 +1,4 @@
 import "./common.scss";
-import ObjectsStorage from "../src/components/ObjectsStorage";
 
-window.storage = new ObjectsStorage("diacart");
-import Diacart from "../src/index";
-
+import Diacart from "../lib/diacart";
 window.diacart = new Diacart();
