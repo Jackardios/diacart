@@ -77,15 +77,15 @@ export default class Diacart {
     this._attachEventHandlers();
   }
 
-  on() {
+  on(eventName, emitted, context) {
     return this.eventEmitter.on(eventName, emitted, context);
   }
 
-  once() {
+  once(eventName, emitted, context) {
     return this.eventEmitter.once(eventName, emitted, context);
   }
 
-  removeListener() {
+  removeListener(eventName, emitted, context) {
     return this.eventEmitter.removeListener(eventName, emitted, context);
   }
 
@@ -154,7 +154,7 @@ export default class Diacart {
   };
 
   order = () => {
-    this.eventEmitter.emit("order");
+    this.eventEmitter.emit("order", this.storage.values());
   };
 
   render = () => {

@@ -94,7 +94,9 @@ export default class ObjectsStorage {
   }
 
   values() {
-    return this.data.values();
+    return this.keys.map(id => {
+      return this.data[id];
+    });
   }
 
   forEach(callback) {
