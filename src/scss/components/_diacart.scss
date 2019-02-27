@@ -1,14 +1,18 @@
 .diacart {
   @extend %font-size-4;
   @extend %border-box-children;
-  padding: 30px 15px;
+  padding: 30px 0;
   font-family: $diacart-base-font;
   color: $diacart-color-dark;
   min-width: 250px;
 
   &__header {
+    // padding: 0 0 $diacart-base-offset 0;
     border-bottom: 1px solid $diacart-color-gray--light;
-    padding: 0 0 $diacart-base-offset 0;
+
+    &-col {
+      margin-bottom: $diacart-base-offset;
+    }
   }
 
     &__title {
@@ -39,7 +43,7 @@
   }
 
   &__total-price {
-    [data-diacart-total-price-container] {
+    &-accent {
       @extend %font-size-2;
       font-family: $diacart-numbers-font;
       font-weight: bold;

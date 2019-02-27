@@ -20,6 +20,7 @@ const defaultOptions = {
   removeFromCartBtnText: "",
   emptyCartText: "Ваша корзина пуста",
   orderBtnText: "Оформить заказ",
+  clearBtnText: "Очистить корзину",
 
   currency: "р.",
   groupBy: "id", // 'null', 'undefined' or false to not group
@@ -37,6 +38,7 @@ const defaultOptions = {
   removeFromCartBtnSelector: "[data-diacart-remove-from-cart]",
   quantityInputSelector: "[data-diacart-quantity-input]",
   orderBtnSelector: "[data-diacart-order]",
+  clearBtnSelector: "[data-diacart-clear]",
 
   // templates
   template: template,
@@ -133,7 +135,7 @@ export default class Diacart {
       return added;
     }
     added = this.storage.add(item);
-    this.eventEmitter.emit("add");
+    this.eventEmitter.emit("add", added);
     return added;
   };
 
@@ -143,14 +145,14 @@ export default class Diacart {
       return false;
     }
     let added = this.storage.remove(id);
-    this.eventEmitter.emit("remove");
+    this.eventEmitter.emit("remove", id);
 
     return added;
   };
 
   update = (id, updateObj) => {
     let updated = this.storage.update(id, updateObj);
-    this.eventEmitter.emit("update");
+    this.eventEmitter.emit("update", id, updateObj);
 
     return updated;
   };
@@ -219,6 +221,17 @@ export default class Diacart {
       e => {
         e.preventDefault();
         this.order();
+      },
+      true
+    );
+
+    addDelegatedEventListener(
+      document,
+      "click",
+      this.options.clearBtnSelector,
+      e => {
+        e.preventDefault();
+        this.clear();
       },
       true
     );

@@ -11,32 +11,38 @@
 
   &__image-col {
     display: block;
-    width: 175px;
     max-width: 100%;
-    max-height: 250px;
     overflow: hidden;
 
-    @include bp-from(md) {
-      width: 300px;
-      max-height: 300px;
-    }
-  }
-
-  &__image {
-    display: block;
-    width: auto;
-    max-width: 100%;
-    height: auto;
-
-    @include bp-from(sm) {
+    @media screen and (max-width: 420px) {
       width: 100%;
     }
   }
 
+  &__image {
+    @extend %bg-cover;
+    display: block;
+    width: 100px;
+    height: 100px;
+    max-width: 100%;
+    margin: 0 auto;
+
+    @media screen and (max-width: 420px) {
+      width: 200px;
+      height: 200px;
+    }
+
+    @include bp-from(md) {
+      width: 175px;
+      height: 175px;
+    }
+  }
+
   &__text-col {
-    padding-right: 50px + $diacart-base-offset;
+    // padding-right: 50px + $diacart-base-offset;
+    display: flex;
+    flex-direction: column;
     width: 100%;
-    min-width: 300px;
 
     @include bp-from(md) {
       width: 300px;
@@ -46,7 +52,8 @@
   &__title {
     @extend %font-size-3;
     display: block;
-    margin: $diacart-base-offset 0;
+    margin: 0;
+    font-weight: bold;
     // font-weight: bold;
     text-decoration: none;
     color: $diacart-color-dark;
@@ -54,19 +61,15 @@
 
   &__price {
     @extend %font-size-2;
-    margin: 0 0 $diacart-base-offset 0;
+    margin: 0;
     font-family: $diacart-numbers-font;
     font-weight: bold;
+    text-align: right;
   }
-
-  &__quantity {}
 
   &__remove-btn {
     @extend .diacart-btn;
     @extend %bg-cover;
-    position: absolute;
-    top: $diacart-base-offset*2;
-    right: 0;
     width: 28px;
     height: 28px;
     opacity: 0.3;
@@ -75,6 +78,22 @@
 
     &:hover {
       opacity: 1;
+    }
+  }
+
+  &__options {
+    margin-top: auto;
+    padding-top: 1rem;
+  }
+
+  &-option {
+    &__title {
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+
+    &__value {
+
     }
   }
 }

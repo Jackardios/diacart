@@ -206,7 +206,6 @@ export default class ObjectsStorage {
       delete this.data[index];
       removed[index] = item;
     });
-    console.log(removed);
 
     this.data = this.data;
 
