@@ -1,22 +1,22 @@
-const path = require('path');
-const webpack = require('webpack');
-const merge = require('webpack-merge');
-const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const path = require("path");
+const webpack = require("webpack");
+const merge = require("webpack-merge");
+const TerserPlugin = require("terser-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-const pkg = require('./package.json');
+const pkg = require("./package.json");
 const libraryName = pkg.name;
 
 module.exports = (env, options) => {
-  const isDevMode = (options.mode !== 'production');
+  const isDevMode = options.mode !== "production";
 
   const commonConfig = {
-    entry: './src/index.js',
+    entry: "./src/index.js",
     output: {
-      path: path.resolve(__dirname, 'lib'),
-      filename: libraryName + (isDevMode ? '.js' : '.min.js'),
+      path: path.resolve(__dirname, "lib"),
+      filename: libraryName + (isDevMode ? ".js" : ".min.js"),
       library: libraryName,
-      libraryTarget: 'umd',
+      libraryTarget: "umd",
       umdNamedDefine: true
     },
     module: {
@@ -32,10 +32,10 @@ module.exports = (env, options) => {
           test: /\.(sa|sc|c)ss$/,
           use: [
             MiniCssExtractPlugin.loader,
-            'css-loader',
-            'postcss-loader',
-            'sass-loader',
-          ],
+            "css-loader",
+            "postcss-loader",
+            "sass-loader"
+          ]
         },
         {
           test: /\.html$/,
@@ -54,11 +54,11 @@ module.exports = (env, options) => {
             // @see https://github.com/aui/art-template
             minimize: !isDevMode,
             htmlMinifierOptions: {
-                collapseWhitespace: true,
-                minifyCSS: true,
-                minifyJS: true,
-                // automatically merged at runtime: rules.map(rule => rule.test)
-                ignoreCustomFragments: []
+              collapseWhitespace: true,
+              minifyCSS: true,
+              minifyJS: true,
+              // automatically merged at runtime: rules.map(rule => rule.test)
+              ignoreCustomFragments: []
             }
           }
         }
@@ -66,20 +66,18 @@ module.exports = (env, options) => {
     },
     plugins: [
       new MiniCssExtractPlugin({
-        filename: libraryName + (isDevMode ? '.css' : '.min.css'),
-      }),
+        filename: libraryName + (isDevMode ? ".css" : ".min.css")
+      })
     ],
     resolve: {
-      modules: [path.resolve('./node_modules'), path.resolve('./src')],
-      extensions: ['.json', '.js']
+      modules: [path.resolve("./node_modules"), path.resolve("./src")],
+      extensions: [".json", ".js"]
     }
-  }
+  };
 
   const devConfig = {
-    plugins: [
-      new webpack.HotModuleReplacementPlugin(),
-    ],
-    devtool: 'source-map',
+    plugins: [new webpack.HotModuleReplacementPlugin()],
+    devtool: "source-map",
     devServer: {
       hot: true,
       compress: true,
@@ -89,29 +87,38 @@ module.exports = (env, options) => {
 
   const productionConfig = {
     optimization: {
-      minimizer: [
-        new OptimizeCSSAssetsPlugin({}),
-      ],
+      minimizer: [new OptimizeCSSAssetsPlugin({})],
       splitChunks: {
         cacheGroups: {
           styles: {
-            name: 'styles',
+            name: "styles",
             test: /\.css$/,
-            chunks: 'all',
+            chunks: "all",
             enforce: true
           }
-        },
-        chunks: "all"
+        }
+        // chunks: "all"
       }
     },
     plugins: [
-      new UglifyJsPlugin({
+      new TerserPlugin({
+        terserOptions: {
+          compress: {
+            warnings: true,
+            drop_console: true
+          },
+          output: {
+            comments: false
+          }
+        },
         cache: true,
         parallel: true,
-        sourceMap: true // set to true if you want JS source maps
-      }),
-    ],
-  }
+        sourceMap: true
+      })
+    ]
+  };
 
-  return isDevMode ? merge(commonConfig, devConfig) : merge(commonConfig, productionConfig);
-}
+  return isDevMode
+    ? merge(commonConfig, devConfig)
+    : merge(commonConfig, productionConfig);
+};

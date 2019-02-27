@@ -2,5 +2,22 @@
   "presets": [
     "@babel/preset-env"
   ],
-  "plugins": ["@babel/plugin-proposal-class-properties"]
+  "plugins": [
+    "@babel/plugin-proposal-class-properties",
+    ["template-html-minifier", {
+      "modules": {
+        "lit-html": ["html"],
+        "lit-element": [
+          "html",
+          {"name": "css", "encapsulation": "style"}
+        ],
+        "choo/html": [null],
+        "hyperhtml": [{"name": "bind", "type": "factory"}],
+        "hyperhtml-element": [{"name": null, "member": "html"}]
+      },
+      "htmlMinifier": {
+        "collapseWhitespace": true
+      }
+    }]
+  ]
 }
