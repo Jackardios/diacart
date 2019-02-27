@@ -10,6 +10,7 @@ import {
   // addClass,
   // removeClass
 } from "../utils/helpers";
+import diacartCounterInit from "../components/diacartCounterInit";
 
 const defaultOptions = {
   name: "diacart",
@@ -75,6 +76,12 @@ export default class Diacart {
 
     this.render();
     this._attachEventHandlers();
+
+    if (this._containers.length) {
+      for (let i = 0; i < this._containers.length; ++i) {
+        diacartCounterInit(this._containers[i]);
+      }
+    }
   }
 
   on(eventName, emitted, context) {

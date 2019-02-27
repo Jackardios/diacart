@@ -25,6 +25,7 @@
     text-align: right;
     border-top: 1px solid $diacart-color-gray--light;
     padding: #{$diacart-base-offset -12px} 0 0 0;
+    animation: diacart-appearance .24s ease;
 
     &-container {
       margin: 0 -12px;
