@@ -235,8 +235,10 @@
     padding: 10px 16px; }
   .diacart-btn--primary {
     color: #fff;
+    border: 1px solid #2196f3;
     background-color: #2196f3; }
     .diacart-btn--primary:hover {
+      border-color: #0c84e4;
       background-color: #0c84e4; }
   .diacart-btn--default {
     color: #1d1d1d;
