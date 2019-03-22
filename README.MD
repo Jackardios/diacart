@@ -24,6 +24,7 @@ npm install diacart -S
 
 ### Insert add to cart button to your products catalog:
 Add two attributes to the button:
+
 **data-diacart-add-to-cart** - Defines the function of the button.
 
 **data-diacart-item-json** - Defines JSON with the following product properties:
