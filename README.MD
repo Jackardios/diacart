@@ -1,6 +1,7 @@
 Diacart
 -
 [![npm version](https://badge.fury.io/js/diacart.svg)](https://badge.fury.io/js/diacart)
+
 Diacart is a shopping cart based on localStorage. It provides a declarative interface that allows you to fully customize the cart.
 
 ## Features
@@ -24,12 +25,14 @@ npm install diacart -S
 ### Insert add to cart button to your products catalog:
 Add two attributes to the button:
 **data-diacart-add-to-cart** - Defines the function of the button.
+
 **data-diacart-item-json** - Defines JSON with the following product properties:
 - id - product ID
 - name - product name
 - price - product price as number
 - image - product thumb as image link
 - quantity (default: 1) - selected quantity of product
+
 > **Escape quotes in JSON before inserting it into the data-diacart-item-json attribute.**
 ```html
 <button
