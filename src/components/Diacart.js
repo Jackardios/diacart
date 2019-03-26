@@ -1,5 +1,4 @@
 import { html, render } from "lit-html";
-// import { render } from "lit-html/lib/lit-extended";
 import EventEmitter from "eventemitter3";
 import template from "../templates/diacart";
 import itemTemplate from "../templates/diacart-item";
@@ -7,7 +6,8 @@ import miniTemplate from "../templates/diacart-mini";
 
 import ObjectsStorage from "./ObjectsStorage";
 import {
-  addDelegatedEventListener
+  addDelegatedEventListener,
+  isEmptyObject
   // addClass,
   // removeClass
 } from "../utils/helpers";
@@ -41,10 +41,10 @@ const defaultOptions = {
   orderBtnSelector: "[data-diacart-order]",
   clearBtnSelector: "[data-diacart-clear]",
 
-  // template render function
-  render: render,
-
   // templates
+  templateTagFunction: html, // The default lit-html html() function is used.
+  templateRenderFunction: render, // The default lit-html render() function is used.
+
   template: template,
   itemTemplate: itemTemplate,
   miniTemplate: miniTemplate,
@@ -62,7 +62,10 @@ export default class Diacart {
   init() {
     this.eventEmitter = new EventEmitter();
     this.storage = new ObjectsStorage(this.options.name);
-    this.storage.eventEmitter.on("update", this.render);
+    this.storage.eventEmitter.on("update", (newValue, prevValue) => {
+      this.eventEmitter.emit("storageUpdate", newValue, prevValue);
+      this.render();
+    });
 
     this._containers = document.querySelectorAll(
       this.options.containerSelector
@@ -102,6 +105,10 @@ export default class Diacart {
     return this.eventEmitter.removeListener(eventName, emitted, context);
   }
 
+  emit(eventName, ...args) {
+    return this.eventEmitter.emit(eventName, args);
+  }
+
   get totalPrice() {
     return this._calculateTotalPrice();
   }
@@ -115,7 +122,7 @@ export default class Diacart {
       console.warn(`'item' argument is ${item}!`);
       return false;
     }
-    let added = false;
+    let addedId = false;
 
     item.quantity =
       this.options.itemHasQuantity && item.quantity && item.quantity > 0
@@ -131,16 +138,16 @@ export default class Diacart {
         const updateObject = Object.assign({}, item, {
           quantity: storageItem.quantity + item.quantity
         });
-        added = this.storage.update(id, updateObject);
+        addedId = this.storage.update(id, updateObject);
       } else {
-        added = this.storage.add(item);
+        addedId = this.storage.add(item);
       }
-      this.eventEmitter.emit("add");
-      return added;
+      this.eventEmitter.emit("add", addedId);
+      return addedId;
     }
-    added = this.storage.add(item);
-    this.eventEmitter.emit("add", added);
-    return added;
+    addedId = this.storage.add(item);
+    this.eventEmitter.emit("add", addedId);
+    return addedId;
   };
 
   remove = id => {
@@ -148,17 +155,17 @@ export default class Diacart {
       console.warn(`'id' argument is required!`);
       return false;
     }
-    let added = this.storage.remove(id);
+    let removedObj = this.storage.remove(id);
     this.eventEmitter.emit("remove", id);
 
-    return added;
+    return removedObj;
   };
 
   update = (id, updateObj) => {
-    let updated = this.storage.update(id, updateObj);
+    let updatedId = this.storage.update(id, updateObj);
     this.eventEmitter.emit("update", id, updateObj);
 
-    return updated;
+    return updatedId;
   };
 
   clear = () => {
@@ -174,24 +181,28 @@ export default class Diacart {
     if (this._containers.length) {
       const containerCompiled = this.options.template(this);
       for (let i = 0; i < this._containers.length; ++i) {
-        this.options.render(containerCompiled, this._containers[i]);
+        this.options.templateRenderFunction(
+          containerCompiled,
+          this._containers[i]
+        );
       }
     }
 
     if (this._miniContainers.length) {
       const miniContainerCompiled = this.options.miniTemplate(this);
       for (let i = 0; i < this._miniContainers.length; ++i) {
-        this.options.render(miniContainerCompiled, this._miniContainers[i]);
+        this.options.templateRenderFunction(
+          miniContainerCompiled,
+          this._miniContainers[i]
+        );
       }
     }
 
     if (this._totalPriceContainers.length) {
       const totalPriceCompiled = this.options.totalPriceTemplate(this);
       for (let i = 0; i < this._totalPriceContainers.length; ++i) {
-        this.options.render(
-          html`
-            ${totalPriceCompiled}
-          `,
+        this.options.templateRenderFunction(
+          totalPriceCompiled,
           this._totalPriceContainers[i]
         );
       }
@@ -200,19 +211,18 @@ export default class Diacart {
     if (this._totalQuantityContainers.length) {
       const totalQuantityCompiled = this.options.totalQuantityTemplate(this);
       for (let i = 0; i < this._totalQuantityContainers.length; ++i) {
-        this.options.render(
-          html`
-            ${totalQuantityCompiled}
-          `,
+        this.options.templateRenderFunction(
+          totalQuantityCompiled,
           this._totalQuantityContainers[i]
         );
       }
     }
+    this.eventEmitter.emit("render");
   };
 
   // helpers
   hasItem(query) {
-    return !!this.storage.findByQuery(query);
+    return !isEmptyObject(this.storage.filter(query));
   }
 
   // private

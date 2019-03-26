@@ -87,6 +87,13 @@ function triggerEvent(element, eventName) {
   }
 }
 
+function isEmptyObject(obj) {
+  for (var key in obj) {
+    if (obj.hasOwnProperty(key)) return false;
+  }
+  return true;
+}
+
 export {
   generateUID,
   createElementFromHTML,
@@ -94,5 +101,6 @@ export {
   removeClass,
   ready,
   addDelegatedEventListener,
-  triggerEvent
+  triggerEvent,
+  isEmptyObject
 };
