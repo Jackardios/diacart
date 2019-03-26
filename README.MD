@@ -78,7 +78,7 @@ const diacart = new Diacart({
   clearBtnSelector: "[data-diacart-clear]",
 
   // templates
-  template: ({ options, storage, totalPrice }) => html``, // cart template
+  template: ({ options, storage, totalPrice }) => html``, // cart template as a function
   miniTemplate: ({ options, storage, totalPrice }) => html``, // mini cart template as a function
   itemTemplate: ({ id, item, options }) => html``, // cart item template as a function
   totalPriceTemplate: ({ options, totalPrice }) =>
@@ -88,10 +88,10 @@ const diacart = new Diacart({
 
 // then you can use the imperative style to add, update, remove, order products.
 // example:
-diacart.add({"id": 46, "name": "Aliquam vehicula dui purus (id46)", "price": 1300, "image": "https://picsum.photos/300/200?image=513"}); // add product
-diacart.update(46, {"name": "New name"}); // update product by id
+const id = diacart.add({"id": 46, "name": "Aliquam vehicula dui purus (id46)", "price": 1300, "image": "https://picsum.photos/300/200?image=513"}); // add product, triggers 'add' event
+diacart.update(id, {"name": "New name"}); // update product by id, triggers 'update' event
 diacart.hasItem({"name": "New name"}); // check on whether a product exists on a specific query 
-diacart.remove(46); // remove product by id
+diacart.remove(id); // remove product by id, triggers 'remove' event
 
 function onOrder(data) {}
 function onClear() {}
@@ -101,6 +101,6 @@ diacart.on('order', onOrder);
 diacart.removeListener('order', onOrder);
 diacart.once('clear', onClear);
 
-diacart.order(); // order cart, trigger event of ordering goods
-diacart.clear(); // clear cart
-```
+diacart.order(); // order cart, triggers 'order' event
+diacart.clear(); // clear cart, triggers 'clear' event
+```z

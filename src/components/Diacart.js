@@ -1,4 +1,5 @@
 import { html, render } from "lit-html";
+// import { render } from "lit-html/lib/lit-extended";
 import EventEmitter from "eventemitter3";
 import template from "../templates/diacart";
 import itemTemplate from "../templates/diacart-item";
@@ -39,6 +40,9 @@ const defaultOptions = {
   quantityInputSelector: "[data-diacart-quantity-input]",
   orderBtnSelector: "[data-diacart-order]",
   clearBtnSelector: "[data-diacart-clear]",
+
+  // template render function
+  render: render,
 
   // templates
   template: template,
@@ -170,21 +174,21 @@ export default class Diacart {
     if (this._containers.length) {
       const containerCompiled = this.options.template(this);
       for (let i = 0; i < this._containers.length; ++i) {
-        render(containerCompiled, this._containers[i]);
+        this.options.render(containerCompiled, this._containers[i]);
       }
     }
 
     if (this._miniContainers.length) {
       const miniContainerCompiled = this.options.miniTemplate(this);
       for (let i = 0; i < this._miniContainers.length; ++i) {
-        render(miniContainerCompiled, this._miniContainers[i]);
+        this.options.render(miniContainerCompiled, this._miniContainers[i]);
       }
     }
 
     if (this._totalPriceContainers.length) {
       const totalPriceCompiled = this.options.totalPriceTemplate(this);
       for (let i = 0; i < this._totalPriceContainers.length; ++i) {
-        render(
+        this.options.render(
           html`
             ${totalPriceCompiled}
           `,
@@ -196,7 +200,7 @@ export default class Diacart {
     if (this._totalQuantityContainers.length) {
       const totalQuantityCompiled = this.options.totalQuantityTemplate(this);
       for (let i = 0; i < this._totalQuantityContainers.length; ++i) {
-        render(
+        this.options.render(
           html`
             ${totalQuantityCompiled}
           `,

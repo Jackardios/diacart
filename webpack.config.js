@@ -23,7 +23,7 @@ module.exports = (env, options) => {
       rules: [
         {
           test: /\.js$/,
-          exclude: /node_modules/,
+          exclude: /node_modules(?![/|\\](lit-html|lit-element))/,
           use: {
             loader: "babel-loader"
           }
@@ -71,7 +71,8 @@ module.exports = (env, options) => {
     ],
     resolve: {
       modules: [path.resolve("./node_modules"), path.resolve("./src")],
-      extensions: [".json", ".js"]
+      extensions: [".json", ".js"],
+      symlinks: false
     }
   };
 
