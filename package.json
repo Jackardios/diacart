@@ -1,6 +1,6 @@
 {
   "name": "diacart",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Simple shopping cart based on localStorage",
   "main": "./lib/diacart.js",
   "unpkg": "./lib/diacart.min.js",
